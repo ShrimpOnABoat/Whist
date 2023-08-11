@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Card Game</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="login">
+      <form id="login-form">
+        <label>
+          Username:
+          <input type="text" id="username" />
+        </label>
+        <label>
+          Password:
+          <input type="password" id="password" />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+    </div>
+    <script>
+document.getElementById('login-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    console.log(`Frontend username: ${username}`);
+    console.log(`Frontend password: ${password}`);
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then((response) => {
+    if (!response.ok) {
+        throw new Error('Login failed');
+    }
+    // Parse the JSON body of the response
+    return response.json();
+    })
+    .then((data) => {
+        // Store the token
+        window.localStorage.setItem('token', data.token);
+
+        // Redirect to the game page
+        window.location.href = "/game.html";
+    })
+    .catch((error) => {
+        // handle failed login
+    });
+});
+    </script>
+  </body>
+</html>

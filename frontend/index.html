@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Card Game</title>
+    <!-- Favicon for your game -->
+    <link rel="icon" type="image/png" href="/res/favicon.png?v=2" />
+
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+            margin: 0;
+            color: #333;
+        }
+        #login {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            background: #fff;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 10px;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            color: #fff;
+            background: #007BFF;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="login">
+      <form id="login-form">
+        <label>
+          Username:
+          <input type="text" id="username" />
+        </label>
+        <label>
+          Password:
+          <input type="password" id="password" />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+    </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const token = window.localStorage.getItem('token');
+      const username = window.localStorage.getItem('username');
+      if (token && username) {
+        // Redirect to the game page
+        window.location.href = "/game.html";
+      }
+    });
+  document.getElementById('login-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    console.log(`Frontend username: ${username}`);
+    console.log(`Frontend password: ${password}`);
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then((response) => {
+    if (!response.ok) {
+        throw new Error('Login failed');
+    }
+    // Parse the JSON body of the response
+    return response.json();
+    })
+    .then((data) => {
+        // Store the token
+        window.localStorage.setItem('token', data.token);
+        window.localStorage.setItem('username', username);
+
+        // Redirect to the game page
+        window.location.href = "/game.html";
+    })
+    .catch((error) => {
+        // handle failed login
+    });
+});
+    </script>
+  </body>
+</html>

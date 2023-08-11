@@ -1,0 +1,39 @@
+@startuml
+participant "Frontend\n(Player)" as F
+participant "Backend\n(Server)" as B
+participant "Database" as D
+
+activate B
+B -> D: getParams
+activate D
+D -> B: sendParams
+deactivate D
+deactivate B
+
+F -> B: Request new game
+activate B
+B -> D: Create new game in database
+activate D
+D --> B: Game ID and initial state
+deactivate D
+B --> F: Game ID and initial state
+deactivate B
+
+F -> B: Place bet
+activate B
+B -> D: Update bet in database
+activate D
+D --> B: Updated game state
+deactivate D
+B --> F: Updated game state
+deactivate B
+
+F -> B: Play card
+activate B
+B -> D: Update played card in database
+activate D
+D --> B: Updated game state
+deactivate D
+B --> F: Updated game state
+deactivate B
+@enduml

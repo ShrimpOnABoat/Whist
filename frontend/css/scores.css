@@ -1,0 +1,71 @@
+/* Resetting some table properties */
+#summaryTable {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Adding a border to the table and centering the text inside cells */
+  #summaryTable th,
+  #summaryTable td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  /* Adding a background color to the header row */
+  #summaryTable th {
+    background-color: #f2f2f2;
+  }
+  
+  /* Alternating row colors for better readability */
+  #summaryTable tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+  
+  /* Adding a subtle hover effect to rows */
+  #summaryTable tr:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Styling the footer row */
+  #summaryTable tr:last-child {
+    font-weight: bold;
+    background-color: #e0e0e0;
+  }
+
+  .summary-table {
+    max-width: 600px; /* You can adjust this value to your preferred maximum width */
+    width: 100%; /* This makes the table take up the full available width up to the maximum */
+    margin: 0 auto; /* This centers the table if it's narrower than its container */
+    overflow-x: auto; /* This adds horizontal scrolling if the content overflows the table's width */
+  }
+  
+  .monthly-scores-table {
+    max-width: 400px; /* You can adjust this value to your preferred maximum width */
+    width: 100%;
+    margin: 0 auto; /* This centers the table if it's narrower than its container */
+    border-collapse: collapse;
+    border: 1px solid #dddddd;
+  }
+  
+  #summaryTable {
+    margin-bottom: 20px; /* or any desired space */
+  }
+  
+  .monthly-scores-table th, .monthly-scores-table td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+  }
+  
+  .monthly-scores-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .year-navigation {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  

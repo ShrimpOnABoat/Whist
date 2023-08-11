@@ -1,0 +1,14 @@
+[
+  {
+    "username": "dd",
+    "hashedPassword": "$2b$10$bZEX9OOOkNsswlVl9dieEeuieQiap2NASTvONgkkKSQmbhWut7v6K"
+  },
+  {
+    "username": "gg",
+    "hashedPassword": "$2b$10$mPmd3brEtee0O96Dv0zGtugW8f7oA9suJUy23WCk4axJszfhCmTam"
+  },
+  {
+    "username": "toto",
+    "hashedPassword": "$2b$10$Cql/9t70NhQkatNK1hAxD.9du8JYqzWlwGKUVeraipnbQn0gE1oXO"
+  }
+]

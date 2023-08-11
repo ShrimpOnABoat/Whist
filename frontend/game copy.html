@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Card Game</title>
+    <link rel="stylesheet" href="css/game-styles.css" />
+    <link rel="icon" type="image/png" href="/res/favicon.png" />
+  </head>
+  <body>
+    <div class="buttons-container">
+    <button id="new-game">New Game</button>
+    <button id="finish-round">Finish Round</button>
+  </div>
+
+  <div class="game-container">
+    <div class="container">
+      <div class="player-zone" id="player1-zone">
+        <img
+          src="res/jerome.jpeg"
+          alt="Player 1"
+          class="player-image"
+          width="115"
+          height="160"
+        />
+        <div class="player-cards" id="player1-cards"></div>
+        <div class="player-bet" id="player1-bet"></div>
+        <div class="player-tricks" id="player1-tricks"></div>
+      </div>
+
+      <div class="game-status">
+        <div class="scores">
+          <div id="player1-score"></div>
+          <div id="player2-score"></div>
+          <div id="player3-score"></div>
+        </div>
+        <div class="trump-color" id="trump-color"></div>
+        <div class="played-cards" id="played-cards"></div>
+        <button id="view-details">View Detailed Score</button>
+      </div>
+
+      <div class="player-zone" id="player2-zone">
+        <img
+          src="res/audrey.jpeg"
+          alt="Player 2"
+          class="player-image"
+          width="115"
+          height="160"
+        />
+        <div class="player-cards" id="player2-cards"></div>
+        <div class="player-bet" id="player2-bet"></div>
+        <div class="player-tricks" id="player2-tricks"></div>
+      </div>
+    </div>
+    <div class="center-zone" id="center-zone">
+      <p id="message">Welcome to the game!</p>
+    </div>
+
+    <div class="bottom-row">
+      <div class="player-zone" id="player3-zone">
+        <img
+          src="res/tony.jpeg"
+          alt="Player 3"
+          class="player-image"
+          width="115"
+          height="160"
+        />
+        <div class="player-cards" id="player3-cards"></div>
+        <div class="player-bet" id="player3-bet"></div>
+        <div class="player-tricks" id="player3-tricks"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Add this just before the closing </body> tag -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.min.js"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  </body>
+  <script src="js/main.js"></script>
+</html>
+
+Example of fetch 
+const token = window.localStorage.getItem('token');
+
+fetch('/protected_route', {
+    headers: {
+        'Authorization': 'Bearer ' + token,
+    },
+});

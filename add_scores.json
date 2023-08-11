@@ -1,0 +1,26 @@
+[
+    {"date": "2023-05-11T04:00:00.000Z", "gg_score": 155, "dd_score": 140, "toto_score": 180},
+    {"date": "2023-05-11T04:00:00.000Z", "gg_score": 115, "dd_score": 155, "toto_score": 110},
+    {"date": "2023-05-18T04:00:00.000Z", "gg_score": 90, "dd_score": 25, "toto_score": 135},
+    {"date": "2023-05-18T04:00:00.000Z", "gg_score": 105, "dd_score": 165, "toto_score": 55},
+    {"date": "2023-05-25T04:00:00.000Z", "gg_score": 165, "dd_score": 135, "toto_score": 160},
+    {"date": "2023-05-25T04:00:00.000Z", "gg_score": 140, "dd_score": 115, "toto_score": 70},
+    {"date": "2023-05-30T04:00:00.000Z", "gg_score": 150, "dd_score": 125, "toto_score": 60},
+    {"date": "2023-05-30T04:00:00.000Z", "gg_score": 155, "dd_score": 155, "toto_score": 120},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 105, "dd_score": 140, "toto_score": 140},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 150, "dd_score": 150, "toto_score": 140},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 130, "dd_score": 150, "toto_score": 140},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 170, "dd_score": 165, "toto_score": 160},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 190, "dd_score": 165, "toto_score": 165},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 105, "dd_score": 80, "toto_score": 100},
+    {"date": "2023-06-10T04:00:00.000Z", "gg_score": 100, "dd_score": 140, "toto_score": 125},
+    {"date": "2023-06-15T04:00:00.000Z", "gg_score": 155, "dd_score": 185, "toto_score": 115},
+    {"date": "2023-06-15T04:00:00.000Z", "gg_score": 150, "dd_score": 145, "toto_score": 160},
+    {"date": "2023-07-18T04:00:00.000Z", "gg_score": 65, "dd_score": 95, "toto_score": 100},
+    {"date": "2023-07-18T04:00:00.000Z", "gg_score": 125, "dd_score": 95, "toto_score": 130},
+    {"date": "2023-07-25T04:00:00.000Z", "gg_score": 125, "dd_score": 115, "toto_score": 140},
+    {"date": "2023-07-25T04:00:00.000Z", "gg_score": 65, "dd_score": 120, "toto_score": 110},
+    {"date": "2023-08-02T04:00:00.000Z", "gg_score": 160, "dd_score": 110, "toto_score": 110},
+    {"date": "2023-08-02T04:00:00.000Z", "gg_score": 240, "dd_score": 125, "toto_score": 110}
+  ]
+  

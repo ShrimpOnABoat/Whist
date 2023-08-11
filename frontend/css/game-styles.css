@@ -1,0 +1,250 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90vw;
+  height: 90vh;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.upper-row, .bottom-row {
+display: flex;
+justify-content: space-around;
+align-items: center;
+width: 100%;
+padding: 20px 0;
+}
+
+.game-info {
+  display: flex;
+  align-items: start;
+}
+
+.central-area {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+width: 100%;
+}
+
+.game-controls, .archive-container {
+display: flex;
+justify-content: space-around;
+width: 100%;
+padding: 20px 0;
+}
+
+.player-image {
+border-radius: 50%;
+border: 2px solid #2a9d8f;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+margin-bottom: 10px;
+}
+
+.first-to-start-image {
+position: absolute;
+top: -15px;
+right: -15px;
+width: 30px;
+height: 30px;
+visibility: hidden;
+}
+
+.middle-row {
+  display: block;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px; /* or however much space you want */
+}
+
+/* Add styles for .player-left and .player-right */
+.player-left {
+  display: flex;
+  flex-direction: column; /* Stack the images vertically */
+  align-items: center; /* Align items horizontally center */
+}
+
+.player-right {
+  display: flex;
+  flex-direction: column; /* Stack the elements vertically */
+  align-items: center; /* Align items horizontally center */
+  margin-top: 10px; /* Add spacing between the images and the player-right content */
+}
+
+.game-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+  .trump-card {
+    height: 140px; /* Adjust to match your design */
+    background-size: cover; /* This assumes you're using a background image for the card */
+    margin-right: 20px; /* adjust as needed */
+  }
+    
+  .trump-card-img {
+    height: 100px; /* Adjust to match your design */
+    width: auto; /* Maintain aspect ratio */
+  }
+  .trump-option {
+    /* Adjust the width and height to match your card images */
+    height: 100px;
+  }
+  
+  .trump-option.selected {
+    border: 2px solid yellow;
+  }
+  
+  .trick-card-img {
+    height: 100px; /* Adjust to match your design */
+    width: auto; /* Maintain aspect ratio */
+  }
+  
+  #trick-cards {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  
+  .trick-card {
+    margin: 0 10px;
+  }
+  
+  .trick-card.mainPlayer { 
+    margin-top: 70px;
+  }
+  .trick-card-placeholder {
+    /* Adjust the width and height to match your card images */
+    width: 100px;
+    height: 140px;
+  }
+  
+  /* Styles for the container of the cards */
+  .player-cards {
+    position: relative;
+    left: 0;
+    width: max-content;
+    overflow: visible;
+  }
+  
+  /* Styles for the individual cards */
+  .player-cards .card {
+    height: 140px; /* Adjust to match your design */
+    position: relative;
+    float: left;
+    margin-right: -70px; /* Adjust for desired overlap */
+    background-size: cover; /* This assumes you're using a background image for the card */
+    transform: translateX(calc(24px * (var(--n) - 1)));
+  }
+  
+  .player-cards .card.is-playable {
+    transform: translateX(calc(24px * (var(--n) - 1))) translateY(-100px) !important;
+    border: 1px solid blue;
+  }
+  
+  .player-cards .card.selected {
+    /* Styles for selected cards */
+  background-color: yellow; /* You can change this */
+  /* transform: translateY(-20px);  */
+  border: 3px solid yellow;
+}
+  
+/* Offset each card by 24px to the right of the previous card */
+.player-cards .card:nth-child(n+2) {
+  transform: translate3d(calc(24px * (var(--n) - 1)), 0, 0);
+}
+
+/* Move the card up and to the right when it's playable 
+.player-cards .card.is-playable:nth-child(n+2) {
+  transform: translate3d(calc(24px * (var(--n) - 1)), -10px, 0);
+}*/
+
+/* Offset each card by 24px to the right of the previous card 
+.player-cards .card:nth-child(n+2) {
+  transform: translateX(calc(24px * (var(--n) - 1)));
+}*/
+
+.bet-option {
+  display: inline-block;
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.bet-option.selected {
+  background-color: yellow;
+}
+.player-images {
+  display: flex;
+  flex-direction: column; /* Stack the images vertically */
+  align-items: center; /* Align items horizontally center */
+}
+
+
+.player-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  }
+  
+  .player-info {
+  display: flex;
+  align-items: center; /* Align items horizontally center */
+  margin-bottom: 20px; /* Add spacing between the images and the player-right content */
+}
+
+.player-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 20px;  /* adjust as needed */
+  width: 60px;
+}
+
+/* Update styles for .bottom-row */
+.bottom-row {
+  display: flex;
+  justify-content: space-around; /* Distribute items evenly along the main axis */
+}
+
+#choose-trump {
+display: none;
+position: relative;
+width: 50%;
+margin: 0 auto;
+}
+
+#player1-header, #player1-score {
+  background-color: #D3D3D3; /* Color for the first column */
+}
+
+#player2-header, #player2-score {
+  background-color: #D3D3D3; /* Color for the second column */
+}
+
+#player3-header, #player3-score {
+  background-color: #D3D3D3; /* Color for the third column */
+}
+
+#mises-header, #mises-score {
+  background-color: #D3D3D3; /* Light grey color for the mises column */
+}

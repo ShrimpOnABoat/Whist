@@ -1,0 +1,7 @@
+npm start for webserver
+
+
+cd backend/whist-backend
+node app.js for backend
+
+ssh -i "AWS_whist_key.pem" ec2-user@ec2-3-145-20-21.us-east-2.compute.amazonaws.com
