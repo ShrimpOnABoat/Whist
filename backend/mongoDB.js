@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require('path');
 
 async function getParams() {
   // this function returns the id of the loser, the number of months lost,
@@ -9,8 +10,10 @@ async function getParams() {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
 
+    // Define the path to the JSON file
+    const filePath = path.join(__dirname, `scores/scores_${currentYear}.json`);
     // Load past games for the current year from JSON file
-    const pastGames = JSON.parse(fs.readFileSync(`scores/scores_${currentYear}.json`, 'utf-8'));
+    const pastGames = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     
 
     const previousMonthGames = pastGames.filter((game) => {
