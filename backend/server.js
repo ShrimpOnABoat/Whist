@@ -22,7 +22,8 @@ app.use(express.static('frontend'));
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    // origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [process.env.ORIGIN],
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -236,7 +237,11 @@ router.post('/login', async (req, res) => {
       res.status(401).send('User not found');
     } else {
       bcrypt.compare(req.body.password, user.hashedPassword, async (err, isMatch) => {
-        if (err || !isMatch) {
+        if (err) {
+          console.error('Error comparing passwords:', err);
+          res.status(401).send('Incorrect password');
+        } else if (!isMatch) {
+          console.log('Passwords do not match');
           res.status(401).send('Incorrect password');
         } else {
           // start a session and send success response
@@ -1058,13 +1063,10 @@ socket.on('logout', () => {
     });
 });
 
-/* Scores page */
-
-
 app.use('/', router);
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
