@@ -348,7 +348,7 @@ function createPublicGameState(username) {
             // Can players see the trump card
             // if monthlyLosses > 2 or position is 2 or 3, and not everyone is first, yes 
             // also if we're already playing
-            const anyPlayerPlaying = gameState.players.some(player => player.action === 'playCard');
+            const anyPlayerPlaying = gameState.players.some(player => player.action === 'playCard' || player.action === 'grabTrick');
             if (getPosition(username) === 1 && player.monthlyLosses < 3 && !allScoresEqual() && !anyPlayerPlaying) {
                 publicGameState.trumpCard = { suit: null, value: null };
             }
