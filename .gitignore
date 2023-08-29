@@ -1,3 +1,6 @@
 # .gitignore
 .env
 frontend/.DS_Store
+Atout.png
+Starting point.png
+backend/scores/
