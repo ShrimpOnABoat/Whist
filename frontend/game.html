@@ -4,22 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Whist International Championship</title>
-    <link rel="stylesheet" href="css/game-styles.css" />
+    <link id="my-stylesheet" rel="stylesheet" href="css/game-styles.css" />
     <link rel="icon" type="image/png" href="/res/favicon.png" />
   </head>
   <body>
     <div class="game-container">
       <div class="upper-row">
-        <div class="player-zone" id="player1-zone">
+        <div class="player1-zone" id="player1-zone">
           <div class="player-info">
-            <img src="res/jerome.jpeg" alt="Player 1" class="player-image" width="115" height="160" id="player1-image"/>
+            <img src="res/jerome.jpeg" alt="Player 1" class="player-image" width="62.5" height="80" id="player1-image"/>
             <img src="res/first_to_start.jpeg" class="first-to-start-image" id="player1-first-to-start"/>
             <div class="player-stats">
               <div class="player-bet" id="player1-bet"></div>
               <div class="player-tricks" id="player1-tricks"></div>
             </div>
           </div>
-          <div class="player-cards" id="player1-cards"></div>
+          <div class="player-cards small-cards" id="player1-cards"></div>
         </div>
         <div class="central-area">
         <div class="archive-container">
@@ -28,7 +28,7 @@
         </div>
         <div class="middle-row" id="game-area">
             <div class="game-status">
-            <div class="game-info">
+              <div class="game-info">
                   <div class="trump-card" id="trump-card"></div>
                   <table class="scores-table">
                     <thead>
@@ -50,6 +50,9 @@
                       </tr>
                     </tbody>
                   </table>
+                  <div class="deck-container" id="deck-container"> <!-- New container for deck of cards -->
+                    <!-- Add your deck of cards here -->
+                  </div>
                 </div>
                 <div class="trick-cards" id="trick-cards"></div>
               </div>
@@ -65,35 +68,47 @@
               <button id="game-button" disabled>Nouvelle partie</button>
             </div>
         </div>
-        <div class="player-zone" id="player2-zone">
+        <div class="player2-zone" id="player2-zone">
           <div class="player-info">
-            <img src="res/audrey.jpeg" alt="Player 1" class="player-image" width="115" height="160" id="player2-image"/>
+            <img src="res/audrey.jpeg" alt="Player 1" class="player-image" width="62.5" height="80" id="player2-image"/>
             <img src="res/first_to_start.jpeg" class="first-to-start-image" id="player2-first-to-start"/>
             <div class="player-stats">
               <div class="player-bet" id="player2-bet"></div>
               <div class="player-tricks" id="player2-tricks"></div>
             </div>
           </div>
-          <div class="player-cards" id="player2-cards"></div>
+          <div class="player-cards small-cards" id="player2-cards"></div>
         </div>
       </div>
       <div class="bottom-row">
         <div class="player-zone" id="player3-zone">
           <div class="player-info">
             <div class="player-images">
-              <img src="res/tony.jpeg" alt="Player 3" class="player-image" width="115" height="160" id="player3-image" />
+              <img src="res/tony.jpeg" alt="Player 3" class="player-image" width="62.5" height="80" id="player3-image" />
               <img src="res/first_to_start.jpeg" class="first-to-start-image" id="player1-first-to-start" />
               <div class="player-stats">
                 <div class="player-bet" id="player3-bet"></div>
                 <div class="player-tricks" id="player3-tricks"></div>
               </div>
             </div>
-            <div class="player-cards" id="player3-cards"></div>
+            <div class="player-cards main-player" id="player3-cards"></div>
           </div>
         </div>
       </div>
     </div>
+    <div id="lastTrickModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-title" style="text-align:center;display:block">Dernier pli</span>
+        <div id="lastTrickCards" class="card-container">
+          <!-- Cards will be appended here -->
+        </div>
+      </div>
+    </div>
+    <div id="roundsModal" style="display:none;">
+      <div id="roundsTable"></div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/config.js"></script>
     <script src="js/main.js"></script>
   </body>
   </html>

@@ -360,7 +360,7 @@ function createPublicGameState(username) {
             }
         }
     });
-    publicGameState.deck = [];
+    publicGameState.deck = gameState.deck.length;
     // Return the modified gameState
     return publicGameState;
 }
@@ -377,7 +377,7 @@ function initalizeGameState() {
               hand: [],
               scores: [],
               announcedTricks: [],
-              madeTricks: 0,
+              madeTricks: [0],
               monthlyLosses: 0,
               bonusCards: 0,
               connected: false,
@@ -389,7 +389,7 @@ function initalizeGameState() {
               hand: [],
               scores: [],
               announcedTricks: [],
-              madeTricks: 0,
+              madeTricks: [0],
               monthlyLosses: 0,
               bonusCards: 0,
               connected: false,
@@ -401,7 +401,7 @@ function initalizeGameState() {
               hand: [],
               scores: [],
               announcedTricks: [],
-              madeTricks: 0,
+              madeTricks: [0],
               monthlyLosses: 0,
               bonusCards: 0,
               connected: false,
@@ -411,6 +411,7 @@ function initalizeGameState() {
       ],
       trumpCard: [],
       trickCards: [],
+      lastTrick: [],
       playOrder: shuffleOrder(['gg', 'dd', 'toto']),
       startingPlayer: '',
       lastGameWinners: []
@@ -427,10 +428,10 @@ function newGame() {
         player.hand = [];
         player.scores = [];
         player.announcedTricks = [];
-        player.madeTricks = 0;
+        player.madeTricks = [0];
     })
     gameState.trumpCard = [];
-    gameState.playOrder = shuffleOrder(['gg', 'dd', 'toto']);
+//    gameState.playOrder = shuffleOrder(['gg', 'dd', 'toto']);
     gameState.lastGameWinners = []
 
     // retrieve info from past games
@@ -609,6 +610,8 @@ function newRound() {
     gameState.round++
     // remove trump card
     gameState.trumpCard = []
+    // reset last trick
+    gameState.lastTrick = []
     
    
     // initialize deck of cards and remove cards from eveywhere else
@@ -617,7 +620,7 @@ function newRound() {
     // initialize players parameters
     for (let i = 0; i < gameState.players.length; i++) {
         gameState.players[i].hand = [];
-        gameState.players[i].madeTricks = 0;
+        gameState.players[i].madeTricks[gameState.round-1] = 0;
         // actions
         // si 3 premiers rounds
         if (gameState.round < 4){
@@ -692,7 +695,7 @@ function newRound() {
         let score = 0; // Initialize current round's score
 
         // If player's announced tricks match the made tricks
-        if(player.madeTricks === player.announcedTricks[player.announcedTricks.length - 1]) {
+        if(player.madeTricks[player.madeTricks.length-1] === player.announcedTricks[player.announcedTricks.length - 1]) {
             score = 10; // Base score
 
             // Bonus scores
@@ -703,7 +706,7 @@ function newRound() {
             }
         } else {
             // Penalty when player's announced tricks don't match the made tricks
-            score = -5 * Math.abs(player.announcedTricks[player.announcedTricks.length - 1] - player.madeTricks);
+            score = -5 * Math.abs(player.announcedTricks[player.announcedTricks.length - 1] - player.madeTricks[player.madeTricks.length-1]);
         }
 
         // Special bonus in final round
@@ -1004,10 +1007,11 @@ socket.on('logout', () => {
       const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
       
       // Update the number of tricks done by this player
-      player.madeTricks += 1;
-      console.log(player.username + ' now has ' + player.madeTricks + ' tricks')
+      player.madeTricks[gameState.round-1] += 1;
+      console.log(player.username + ' now has ' + player.madeTricks[gameState.round-1] + ' tricks')
     
-      // Clear trickCards
+      // Save and Clear trickCards
+      gameState.lastTrick = gameState.trickCards;
       gameState.trickCards = [];
     
       // Check if it's the last trick

@@ -1,5 +1,6 @@
 // Add this at the top of your main.js
-const socket = io("http://localhost:3001");
+// const socket = io("http://localhost:3000");
+const socket = io(config.SERVER_URL);
 const username = window.localStorage.getItem('username');
 if (!username) {
   window.location.href = '/index.html'; 
@@ -28,12 +29,15 @@ function setPlayerPositions(gameState) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-  // Initialize game state, variables, and event listeners
-  var gameState;
-
   socket.emit('getGameState'); // ask for gameState
+});
 
+let styleSheet;
+let yourStaticRulesCount;
+document.getElementById('my-stylesheet').addEventListener('load', function() {
+  styleSheet = document.styleSheets[0];
+  yourStaticRulesCount = styleSheet.cssRules.length;
+  // You can call your updateDeck function or other code here
 });
 
 let logoutButton = document.getElementById('Logout'); 
@@ -98,6 +102,178 @@ socket.on('connect', () => {
   }
 });
 
+// Event listener for the 'S' key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 's' || e.key === 'S') {
+    toggleRoundsTable();
+  }
+});
+
+function toggleRoundsTable() {
+  const existingModal = document.getElementById('scoresModal');
+  if (existingModal) {
+    existingModal.remove();
+    return;
+  }
+
+  // Create a modal div
+  const modalDiv = document.createElement('div');
+  modalDiv.id = 'scoresModal';
+  modalDiv.style.position = 'fixed';
+  modalDiv.style.top = '50%';
+  modalDiv.style.left = '50%';
+  modalDiv.style.transform = 'translate(-50%, -50%)';
+  modalDiv.style.zIndex = 1000;  // to ensure it's on top
+  modalDiv.style.border = '1px solid black';
+  modalDiv.style.backgroundColor = 'white';
+
+  // Add a title
+  const title = document.createElement('h3');
+  title.textContent = 'Scores';
+  title.style.textAlign = 'center';
+  modalDiv.appendChild(title);
+
+  // Generate and add the table
+  const table = generateRoundsTable();
+  modalDiv.appendChild(table);
+
+  // Append modal to the body
+  document.body.appendChild(modalDiv);
+}
+
+function generateRoundsTable() {
+  // Create new table and header row
+  const table = document.createElement('table');
+  table.style.borderCollapse = 'collapse';
+  
+  const headerRow = table.insertRow();
+  const roundHeader = headerRow.insertCell();
+  roundHeader.textContent = 'Round';
+  roundHeader.style.textAlign = 'center';
+  
+  const orderedPlayers = ['gg', 'dd', 'toto'].map(name => {
+    return gameState.players.find(player => player.username === name);
+  });
+  
+  orderedPlayers.forEach(player => {
+    const cell = headerRow.insertCell();
+    cell.colSpan = 3;  // Spanning 3 columns: Announced, Made, Score
+    cell.textContent = player.username;
+    cell.style.textAlign = 'center';
+  });
+  
+  const totalCellHeader = headerRow.insertCell();
+  totalCellHeader.textContent = 'Total';
+  totalCellHeader.style.textAlign = 'center';
+  
+  const styleForCells = '2px solid white';  // Replace 'white' with your preferred border color
+
+  // Populate table with round data
+  const numberOfRounds = orderedPlayers[0].scores.length;
+  for (let i = 0; i < numberOfRounds; i++) {
+    const row = table.insertRow();
+    const roundNumberCell = row.insertCell();
+    const roundNumber = i < 3 ? 1 : (i - 1);
+    roundNumberCell.textContent = roundNumber;
+    roundNumberCell.style.textAlign = 'center';
+    roundNumberCell.style.borderRight = '1px solid #000'; // Add a vertical line between players
+    roundNumberCell.style.fontWeight = 'bold';  // Bold text
+
+    let totalAnnouncedTricks = 0;
+    const cellColors = ['#D3D3D3', '#F3F3F3', '#D3D3D3'];
+    orderedPlayers.forEach((player, index) => {
+      // Individual cells for Announced, Made, Score
+      const announcedCell = row.insertCell();
+      announcedCell.textContent = player.announcedTricks[i];
+      announcedCell.style.textAlign = 'right';
+      announcedCell.style.backgroundColor = cellColors[index];  // Light blue background
+      announcedCell.style.border = styleForCells;
+      
+      const madeCell = row.insertCell();
+      madeCell.textContent = player.madeTricks[i];
+      madeCell.style.textAlign = 'right';
+      madeCell.style.backgroundColor = cellColors[index];  // Light yellow background
+      madeCell.style.border = styleForCells;
+
+      const scoreCell = row.insertCell();
+      scoreCell.textContent = player.scores[i];
+      scoreCell.style.textAlign = 'right';
+      scoreCell.style.backgroundColor = cellColors[index];  // Light green background
+      scoreCell.style.border = styleForCells;
+
+      totalAnnouncedTricks += player.announcedTricks[i];
+    });
+
+    const totalCell = row.insertCell();
+    totalCell.textContent = totalAnnouncedTricks;
+    totalCell.style.textAlign = 'center';
+
+    const colorCode = getColorCode(totalAnnouncedTricks, roundNumber);
+    totalCell.style.backgroundColor = colorCode;
+  }
+
+  return table;
+}
+
+let isTrickDisplayed = false;
+
+document.addEventListener('keydown', function(event) {
+  if (event.code === 'Space') {
+    isTrickDisplayed = !isTrickDisplayed;  // Toggle the state
+    if (isTrickDisplayed) {
+      displayLastTrick();
+    } else {
+      hideLastTrick();
+    }
+  }
+});
+
+function displayLastTrick() {
+  const lastTrickModal = document.getElementById('lastTrickModal');
+  const lastTrickCardsDiv = document.getElementById('lastTrickCards');
+  
+  // Clear existing cards if any
+  lastTrickCardsDiv.innerHTML = "";
+
+  // Suppose gameState.lastTrick contains your last trick cards
+  const lastTrick = gameState.lastTrick;
+
+  // Suppose gameState.playOrder contains the order of players
+  const playOrder = gameState.playOrder;
+
+  if (lastTrick && lastTrick.length > 0 && playOrder && playOrder.length === lastTrick.length) {
+    lastTrick.forEach((card, index) => {
+      const cardDiv = document.createElement("div");
+      cardDiv.style.display = "inline-block";
+      cardDiv.style.textAlign = "center";
+
+      const img = document.createElement("img");
+      img.src = `res/${card.suit}_${card.rank}.svg`;
+      img.classList.add("card");
+      img.style.height = "160px"; // Adjust the height
+
+      const playerName = document.createElement("p");
+      playerName.textContent = playOrder[index];
+      
+      cardDiv.appendChild(img);
+      cardDiv.appendChild(playerName);
+      
+      lastTrickCardsDiv.appendChild(cardDiv);
+    });
+  } else {
+    const message = document.createElement("p");
+    message.textContent = "Pas de dernier pli !";
+    lastTrickCardsDiv.appendChild(message);
+  }
+
+  lastTrickModal.style.display = "block";
+}
+
+function hideLastTrick() {
+  const lastTrickModal = document.getElementById('lastTrickModal');
+  lastTrickModal.style.display = "none";
+}
+
 let gameButton = document.getElementById('game-button'); 
 
 let gameButtonGrabFunction = () => {
@@ -142,42 +318,42 @@ function gameButtonFunction(onClickEvent) {
 function updateButtons(gameState) {
   let currentPlayerAction = gameState.players.find(player => player.username === username).action;
   // reset the game-button
-  let gameButtonClone = gameButton.cloneNode(true);
-  gameButton.parentNode.replaceChild(gameButtonClone, gameButton);
-  gameButton = gameButtonClone;
+    let gameButtonClone = gameButton.cloneNode(true);
+    gameButton.parentNode.replaceChild(gameButtonClone, gameButton);
+    gameButton = gameButtonClone;
 
-  switch(currentPlayerAction) {
-    case 'startNewGame': 
-      gameButton.textContent = "Nouvelle partie";
-      gameButton.disabled = false;
-      gameButtonFunction('newGame');
-      break;
-    case 'waitForPlayer':
-    case 'chooseTrump':
-    case 'discard':
-    case 'playCard':
-      gameButton.style.display = 'none'; // Hide the button
-      break;
-    case 'bet':
-      gameButton.textContent = "Choisis ta mise";
-      gameButton.disabled = true; // Initially disable the button until a bet amount is selected
-      gameButton.style.display = 'inline-block'; // Show the button
+    switch(currentPlayerAction) {
+      case 'startNewGame': 
+        gameButton.textContent = "Nouvelle partie";
+        gameButton.disabled = false;
+        gameButtonFunction('newGame');
         break;
-    case 'grabTrick':
-      gameButton.textContent = "Ramasse le pli";
-      gameButton.disabled = false;
-      gameButtonFunction('grabTrick')
-      gameButton.style.display = 'inline-block'; // Show the button
-      break;
-    default:
-      console.error(`Unknown action: ${currentPlayerAction}`);
+      case 'waitForPlayer':
+      case 'chooseTrump':
+      case 'discard':
+      case 'playCard':
+        gameButton.style.display = 'none'; // Hide the button
+        break;
+      case 'bet':
+        gameButton.textContent = "Choisis ta mise";
+        gameButton.disabled = true; // Initially disable the button until a bet amount is selected
+        gameButton.style.display = 'inline-block'; // Show the button
+          break;
+      case 'grabTrick':
+        gameButton.textContent = "Ramasse le pli";
+        gameButton.disabled = false;
+        gameButtonFunction('grabTrick')
+        gameButton.style.display = 'inline-block'; // Show the button
+        break;
+      default:
+        console.error(`Unknown action: ${currentPlayerAction}`);
+    }
   }
-}
 
 function chooseTrump() {
   const chooseTrumpDiv = document.getElementById("choose-trump");
   const gameButton = document.getElementById("game-button");
-
+  
   // Display the div for choosing trump
   chooseTrumpDiv.style.display = "block";
   gameButton.textContent = "Choisis l'atout";
@@ -185,16 +361,16 @@ function chooseTrump() {
   gameButton.style.display = "block"
 
   let chosenOption = null; // Variable to store the selected trump option
-
+  
   // Fetch the trump options
   const trumpOptions = document.getElementsByClassName("trump-option");
   
   // Remove the 'selected' class from all options
-  for (let j = 0; j < trumpOptions.length; j++) {
-    trumpOptions[j].classList.remove('selected');
-  }
-
-  // Create clickable events for each trump option
+      for (let j = 0; j < trumpOptions.length; j++) {
+      trumpOptions[j].classList.remove('selected');
+    }
+  
+    // Create clickable events for each trump option
   for (let i = 0; i < trumpOptions.length; i++) {
     console.log(trumpOptions[i]);
     trumpOptions[i].addEventListener("click", function () {
@@ -386,7 +562,7 @@ function placeBet() {
 
       betSelection.appendChild(betOption);
     }
-  }
+      }
 }
 
 function playCard() {
@@ -481,8 +657,8 @@ function takeAction(gameState) {
 
 // Listen for gameStateUpdate events
 socket.on('updateGameState', (updatedGameState) => {
-  // Update the game UI based on the new game state
-  console.log('received updated gameState')
+    // Update the game UI based on the new game state
+console.log('received updated gameState')
   gameState = updatedGameState;
   updateGameUI(gameState);
   takeAction(gameState);
@@ -539,13 +715,13 @@ function updatePictures(gameState) {
   
   // Set the bets and tricks
   mainPlayerBet.textContent = mainPlayer.announcedTricks[gameState.round-1] !== undefined ? 'Mise : ' + mainPlayer.announcedTricks[gameState.round-1] : 'Mise : ?';
-  mainPlayerTricks.textContent = mainPlayer.madeTricks !== undefined ? 'Plis : ' + mainPlayer.madeTricks : 'Plis : ?';
+  mainPlayerTricks.textContent = mainPlayer.madeTricks[gameState.round-1] !== undefined ? 'Plis : ' + mainPlayer.madeTricks[gameState.round-1] : 'Plis : ?';
     
   leftPlayerBet.textContent = leftPlayer.announcedTricks[gameState.round-1] !== undefined ? 'Mise : ' + leftPlayer.announcedTricks[gameState.round-1] : 'Mise : ?';
-  leftPlayerTricks.textContent = leftPlayer.madeTricks !== undefined ? 'Plis : ' + leftPlayer.madeTricks : 'Plis : ?';
+  leftPlayerTricks.textContent = leftPlayer.madeTricks[gameState.round-1] !== undefined ? 'Plis : ' + leftPlayer.madeTricks[gameState.round-1] : 'Plis : ?';
     
   rightPlayerBet.textContent = rightPlayer.announcedTricks[gameState.round-1] !== undefined ? 'Mise : ' + rightPlayer.announcedTricks[gameState.round-1] : 'Mise : ?';
-  rightPlayerTricks.textContent = rightPlayer.madeTricks !== undefined ? 'Plis : ' + rightPlayer.madeTricks : 'Plis : ?';
+  rightPlayerTricks.textContent = rightPlayer.madeTricks[gameState.round-1] !== undefined ? 'Plis : ' + rightPlayer.madeTricks[gameState.round-1] : 'Plis : ?';
   
   // Check if there's already a starting image and remove it
   const oldStartingImage = document.getElementById("starting-image");
@@ -598,6 +774,40 @@ function updatePictures(gameState) {
 const suitOrder = ['hearts', 'clubs', 'diamonds', 'spades'];
 const rankOrder = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']; // Or whatever order of ranks you use
 
+function adjustCardSpacingForBothZones() {
+  // Adjust for player1-zone
+  adjustCardSpacingForZone('player1');
+  // Adjust for player2-zone
+  adjustCardSpacingForZone('player2');
+}
+
+function adjustCardSpacingForZone(zoneId) {
+  const zoneElement = document.getElementById(zoneId+'-zone');
+  const zoneCardsElement = document.getElementById(zoneId+'-cards');
+  const cardElements = zoneElement.querySelectorAll('.card');
+
+  // Default card width and desired margin-right
+  const cardWidth = 70.27;
+  let desiredMarginRight = -50;
+  
+  const zoneWidth = zoneElement.offsetWidth;
+  const estimatedMarginRight = (zoneWidth - cardWidth) / (cardElements.length - 1) - cardWidth;
+  
+  // If cards take more space than the zone width
+  if (estimatedMarginRight < -50) {
+    desiredMarginRight = estimatedMarginRight;
+  }
+
+  const totalWidth = 70 + (cardElements.length - 1) * (70 + desiredMarginRight)
+  zoneCardsElement.style.width = `${totalWidth}px`;
+  const zoneCardsWidth = zoneCardsElement.offsetWidth;
+  
+  // Update the margin-right for all cards in the zone
+  cardElements.forEach(card => {
+    card.style.marginRight = `${desiredMarginRight}px`;
+  });
+}
+
 function updatePlayerCards(player) {
   let position = ""; // initialize position
   if (player.username === leftPlayer.username) {
@@ -634,12 +844,12 @@ function updatePlayerCards(player) {
           
           // Add a unique id to each card element based on its rank and suit
           img.id = `${card.rank}_${card.suit}`;
-          // Add data-suit and data-rank attributes
+                    // Add data-suit and data-rank attributes
           img.setAttribute("data-suit", card.suit);
           img.setAttribute("data-rank", card.rank);
                 } else {
           img.src = "res/Card_back.svg";
-        }
+                  }
         img.classList.add("card");
         playerCardsDiv.appendChild(img);
       });
@@ -657,6 +867,7 @@ function updatePlayersCards(gameState) {
       console.error(`No hand for player ${player.username}`);
     }
   });
+  adjustCardSpacingForBothZones();
 }
 
 function getColorCode(misesScore, roundNumber) {
@@ -687,6 +898,31 @@ function getColorCode(misesScore, roundNumber) {
   return colorPalette[5 + difference]
 }
 
+function updateDeck(numberOfCards) {
+  const deckContainer = document.getElementById('deck-container');
+  deckContainer.innerHTML = ''; // Clear previous cards
+
+  // Clear previous dynamic rules, assuming the dynamic rules are at the end of the stylesheet
+  const styleSheet = document.styleSheets[0];
+  while (styleSheet.cssRules.length > yourStaticRulesCount) { // Replace yourStaticRulesCount with the number of static rules you have
+    styleSheet.deleteRule(styleSheet.cssRules.length - 1);
+  }
+
+  for (let i = 0; i < numberOfCards; i++) {
+    const cardBack = document.createElement('div');
+    cardBack.className = 'card-back';
+    cardBack.style.zIndex = i + 1; // Stack cards in order
+    deckContainer.appendChild(cardBack);
+
+    // Add dynamic rule for each card
+    styleSheet.insertRule(`
+      .card-back:nth-child(${i + 1}) {
+        transform: translate(-${.2 * i}px, -${.2 * i}px);
+      }
+    `, styleSheet.cssRules.length);
+  }
+}
+
 function updateScoreZone(gameState) {
   // Assuming the gameState object has a 'round' property and a 'players' array
   // And each player object has a 'username' property and a 'scores' array
@@ -706,7 +942,11 @@ function updateScoreZone(gameState) {
   // If round is not 0, update scores and display trump card
   if (roundNumber !== 0) {
     // Update each player's score
-    gameState.players.forEach((player, index) => {
+    const orderedPlayers = ['gg', 'dd', 'toto'].map(name => {
+    return gameState.players.find(player => player.username === name);
+    });
+
+    orderedPlayers.forEach((player, index) => {
       const playerScoreDiv = document.getElementById(`player${index + 1}-score`);
       const playerHeaderDiv = document.getElementById(`player${index + 1}-header`);
       if (playerScoreDiv !== null && playerHeaderDiv !== null) {
@@ -739,13 +979,16 @@ function updateScoreZone(gameState) {
   if (misesElement !== null) {
     const misesScore = gameState.players.reduce((total, player) => {
       const announcedTrick = player.announcedTricks[roundNumber - 1];
-      return announcedTrick !== undefined ? total + announcedTrick : total;
+      if (announcedTrick === undefined || total === null) {
+        return null; // Return null if any player hasn't announced anything yet or if the total was already null
+      }
+      return total + announcedTrick; // Add the announced trick to the total if all players have announced so far
     }, 0);
-    
-    misesElement.innerHTML = misesScore !== 0 ? `${misesScore}` : '';
+
+    misesElement.innerHTML = misesScore !== null ? `${misesScore}` : '';
     
     // If misesScore is defined, update the background color of the mises cell
-    if (misesScore !== 0) {
+    if (misesScore !== null) {
       misesElement.style.backgroundColor = getColorCode(misesScore, roundNumber);
     } 
     // If misesScore is not defined, reset the background color to neutral
@@ -770,6 +1013,8 @@ function updateScoreZone(gameState) {
     
     // Update the div's contents with an img tag referencing the trumpCard's image
     trumpCardDiv.innerHTML = `<img class="trump-card-img" src="${img}" alt="Trump card: ${gameState.trumpCard.rank} of ${gameState.trumpCard.suit}" />`;
+    
+    updateDeck(gameState.deck);
   }
 
   
@@ -823,11 +1068,3 @@ function updateGameUI(gameState) {
 document.getElementById('archive-scores').addEventListener('click', () => {
   window.location.href = "/scores.html";
 });
-
-/*
-TODO
-- gerer le fait qu'un joueur perde la connexion
-- trier les cartes pour GG
-- prendre en compte 50-110-110 au dernier round (pour les 2 cartes en plus)
-- Bug: GrabTrick reste en place au dernier pli du jeu
-*/

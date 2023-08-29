@@ -27,7 +27,7 @@ display: flex;
 justify-content: space-around;
 align-items: center;
 width: 100%;
-padding: 20px 0;
+/* padding: 20px 0; */
 }
 
 .game-info {
@@ -47,7 +47,7 @@ width: 100%;
 display: flex;
 justify-content: space-around;
 width: 100%;
-padding: 20px 0;
+/* padding: 20px 0; */
 }
 
 .player-image {
@@ -137,24 +137,67 @@ visibility: hidden;
     height: 140px;
   }
   
+  .card, .player1-zone, .player2-zone {
+    margin: 0;
+    padding: 0;
+  }
+
   /* Styles for the container of the cards */
   .player-cards {
-    position: relative;
+    /* position: relative;
     left: 0;
     width: max-content;
-    overflow: visible;
+    overflow: visible; */
+    display: flex;
+    align-items: center;
+  }
+
+  .player1-zone, .player2-zone {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;  /* Divide the grid into 3 rows */
+    grid-template-columns: 1fr;  /* Divide the grid into 1 column */
+    position: relative;  
+    width: 500px;  
+    height: 200px;  
   }
   
+  .player-info {
+    grid-row: 1 / 2;  /* Place in the first row */
+  }
+  
+  .player-cards {
+    grid-row: 2 / 3;  /* Place in the second row */
+    justify-self: center;  /* Center the content */
+  }
+
+  .cards-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
   /* Styles for the individual cards */
   .player-cards .card {
     height: 140px; /* Adjust to match your design */
-    position: relative;
-    float: left;
+    /* position: relative; */
+    /* float: left; */
     margin-right: -70px; /* Adjust for desired overlap */
     background-size: cover; /* This assumes you're using a background image for the card */
-    transform: translateX(calc(24px * (var(--n) - 1)));
+    flex-shrink: 0;
   }
   
+  .player-cards.main-player .card {
+    transform: translateX(calc(24px * (var(--n) - 1)));
+  }
+
+  /* Styles for the individual smaller cards */
+  .small-cards .card {
+    height: 100px; /* Adjusted to 100px */
+    position: relative;
+    float: left;
+    background-size: cover; /* This assumes you're using a background image for the card */
+  }
+
   .player-cards .card.is-playable {
     transform: translateX(calc(24px * (var(--n) - 1))) translateY(-100px) !important;
     border: 1px solid blue;
@@ -172,16 +215,6 @@ visibility: hidden;
   transform: translate3d(calc(24px * (var(--n) - 1)), 0, 0);
 }
 
-/* Move the card up and to the right when it's playable 
-.player-cards .card.is-playable:nth-child(n+2) {
-  transform: translate3d(calc(24px * (var(--n) - 1)), -10px, 0);
-}*/
-
-/* Offset each card by 24px to the right of the previous card 
-.player-cards .card:nth-child(n+2) {
-  transform: translateX(calc(24px * (var(--n) - 1)));
-}*/
-
 .bet-option {
   display: inline-block;
   padding: 10px;
@@ -193,6 +226,7 @@ visibility: hidden;
 .bet-option.selected {
   background-color: yellow;
 }
+
 .player-images {
   display: flex;
   flex-direction: column; /* Stack the images vertically */
@@ -247,4 +281,58 @@ margin: 0 auto;
 
 #mises-header, #mises-score {
   background-color: #D3D3D3; /* Light grey color for the mises column */
+}
+
+.deck-container {
+  width: 100px; /* Adjust the width and height based on your card dimensions */
+  height: 105px;
+  position: relative; /* Allows child elements to be positioned relative to this container */
+  overflow: hidden; /* Keeps the offset cards contained within the boundary */
+}
+
+.card-back {
+  width: 66.67px; /* 2/3 of the height to maintain a 3:2 ratio */
+  height: 100px; /* Example size, you can adjust as needed */
+  position: absolute;
+  right: 0; /* Aligns to the right */
+  bottom: 0; /* Aligns to the bottom */
+  background-image: url("../res/Card_back.svg");
+  background-size: cover;
+  background-position: center; /* Center the background */
+}
+
+.card-back:nth-child(n+2) {
+  transform: translate(-2px, -2px); /* Translates both X and Y */
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.modal-title {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
