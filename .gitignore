@@ -6,3 +6,4 @@ Starting point.png
 backend/scores/
 node_modules/
 package-lock.json
+frontend/js/config.js
