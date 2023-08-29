@@ -250,7 +250,7 @@ function displayLastTrick() {
       const img = document.createElement("img");
       img.src = `res/${card.suit}_${card.rank}.svg`;
       img.classList.add("card");
-      img.style.height = "160px"; // Adjust the height
+      img.style.height = "100px"; // Adjust the height
 
       const playerName = document.createElement("p");
       playerName.textContent = playOrder[index];
