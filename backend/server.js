@@ -37,7 +37,7 @@ const router = express.Router();
 // const MongoDBStore = require('connect-mongodb-session')(session)
 
 router.use(cors({
-  origin: 'http://localhost:3000', // adjust this to match the origin you're trying to allow
+  origin: process.env.ORIGIN, // adjust this to match the origin you're trying to allow
   credentials: true
 }));
 
