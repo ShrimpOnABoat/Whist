@@ -12,8 +12,10 @@
       <div class="upper-row">
         <div class="player1-zone" id="player1-zone">
           <div class="player-info">
-            <img src="res/jerome.jpeg" alt="Player 1" class="player-image" width="62.5" height="80" id="player1-image"/>
-            <img src="res/first_to_start.jpeg" class="first-to-start-image" id="player1-first-to-start"/>
+            <div class="player-image-wrapper">
+              <img src="res/jerome.jpeg" alt="Player 1" class="player-image" width="62.5" height="80" id="player1-image"/>
+              <img src="res/first_to_start.png" class="first-to-start-image" id="player1-first-to-start"/>
+            </div>
             <div class="player-stats">
               <div class="player-bet" id="player1-bet"></div>
               <div class="player-tricks" id="player1-tricks"></div>
@@ -54,38 +56,42 @@
                     <!-- Add your deck of cards here -->
                   </div>
                 </div>
-                <div class="trick-cards" id="trick-cards"></div>
+                <div class="trick-cards-wrapper">
+                  <div class="trick-cards" id="trick-cards"></div>
+                  <div id="choose-trump" style="display: none; position: relative; width: 50%; margin: 0 auto;">
+                  <img class="trump-option" src="res/hearts_2.svg" alt="2 of hearts" data-suit="hearts" data-rank="2" />
+                    <img class="trump-option" src="res/spades_2.svg" alt="2 of spades" data-suit="spades" data-rank="2" />
+                    <img class="trump-option" src="res/diamonds_2.svg" alt="2 of diamonds" data-suit="diamonds" data-rank="2" />
+                    <img class="trump-option" src="res/clubs_2.svg" alt="2 of clubs" data-suit="clubs" data-rank="2" />
+                  </div>
+                  <div id="bet-selection" class="bet-selection"></div>
+                </div>
               </div>
             </div>
-            <div id="choose-trump" style="display: none; position: relative; width: 50%; margin: 0 auto;">
-            <img class="trump-option" src="res/hearts_2.svg" alt="2 of hearts" data-suit="hearts" data-rank="2" />
-              <img class="trump-option" src="res/spades_2.svg" alt="2 of spades" data-suit="spades" data-rank="2" />
-              <img class="trump-option" src="res/diamonds_2.svg" alt="2 of diamonds" data-suit="diamonds" data-rank="2" />
-              <img class="trump-option" src="res/clubs_2.svg" alt="2 of clubs" data-suit="clubs" data-rank="2" />
-            </div>
-            <div id="bet-selection" class="bet-selection"></div>
-            <div class="game-controls">
-              <button id="game-button" disabled>Nouvelle partie</button>
-            </div>
-        </div>
-        <div class="player2-zone" id="player2-zone">
-          <div class="player-info">
-            <img src="res/audrey.jpeg" alt="Player 1" class="player-image" width="62.5" height="80" id="player2-image"/>
-            <img src="res/first_to_start.jpeg" class="first-to-start-image" id="player2-first-to-start"/>
-            <div class="player-stats">
-              <div class="player-bet" id="player2-bet"></div>
-              <div class="player-tricks" id="player2-tricks"></div>
-            </div>
           </div>
-          <div class="player-cards small-cards" id="player2-cards"></div>
+          <div class="player2-zone" id="player2-zone">
+            <div class="player-info">
+              <div class="player-image-wrapper">
+                <img src="res/audrey.jpeg" alt="Player 1" class="player-image" width="62.5" height="80" id="player2-image"/>
+                <img src="res/first_to_start.png" class="first-to-start-image" id="player2-first-to-start"/>
+              </div>
+              <div class="player-stats">
+                <div class="player-bet" id="player2-bet"></div>
+                <div class="player-tricks" id="player2-tricks"></div>
+              </div>
+            </div>
+            <div class="player-cards small-cards" id="player2-cards"></div>
+          </div>
         </div>
-      </div>
-      <div class="bottom-row">
-        <div class="player-zone" id="player3-zone">
+        <div class="bottom-row">
+          <div class="player-zone" id="player3-zone">
+          <div class="game-controls">
+            <button id="game-button" disabled>Nouvelle partie</button>
+          </div>
           <div class="player-info">
             <div class="player-images">
               <img src="res/tony.jpeg" alt="Player 3" class="player-image" width="62.5" height="80" id="player3-image" />
-              <img src="res/first_to_start.jpeg" class="first-to-start-image" id="player1-first-to-start" />
+              <img src="res/first_to_start.png" class="first-to-start-image" id="player1-first-to-start" />
               <div class="player-stats">
                 <div class="player-bet" id="player3-bet"></div>
                 <div class="player-tricks" id="player3-tricks"></div>
