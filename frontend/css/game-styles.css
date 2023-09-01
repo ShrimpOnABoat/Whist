@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -15,8 +19,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 90vw;
-  height: 90vh;
+  width: 99vw;
+  height: 99vh;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
@@ -27,6 +31,8 @@ display: flex;
 justify-content: space-around;
 align-items: center;
 width: 100%;
+margin: 0;
+padding: 0;
 /* padding: 20px 0; */
 }
 
@@ -35,19 +41,44 @@ width: 100%;
   align-items: start;
 }
 
-.central-area {
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-width: 100%;
-}
-
+/* .central-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50vw;  
+  height: 50vh; 
+  } */
+  
 .game-controls, .archive-container {
 display: flex;
 justify-content: space-around;
 width: 100%;
 /* padding: 20px 0; */
+}
+
+.game-status {
+  width: 100%;  /* Or any fixed size you want */
+  /* Other styling */
+}
+
+.trick-cards-wrapper {
+  min-width: 300px;  /* adjust as needed */
+  min-height: 180px;  /* adjust as needed */
+  width: 100%; /* Make it the same as game-status */
+  /*padding-bottom: 20%;  Aspect ratio 3:4 => 3/4*100 = 75 */
+  position: relative;
+  background-image: url('../res/felt-texture.jpg');
+  background-size: cover;
+  border-radius: 25px;
+}
+
+.trick-cards {
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .player-image {
@@ -57,13 +88,18 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 margin-bottom: 10px;
 }
 
+.player-image-wrapper {
+  position: relative;
+}
+
 .first-to-start-image {
-position: absolute;
-top: -15px;
-right: -15px;
-width: 30px;
-height: 30px;
-visibility: hidden;
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  width: 30px;
+  height: 30px;
+  visibility: hidden;
+  transform: rotate(45deg);
 }
 
 .middle-row {
@@ -97,22 +133,35 @@ visibility: hidden;
   .trump-card {
     height: 140px; /* Adjust to match your design */
     background-size: cover; /* This assumes you're using a background image for the card */
-    margin-right: 20px; /* adjust as needed */
+    margin: auto;
   }
     
   .trump-card-img {
     height: 100px; /* Adjust to match your design */
     width: auto; /* Maintain aspect ratio */
   }
+
   .trump-option {
     /* Adjust the width and height to match your card images */
     height: 100px;
+    margin: auto;
+    background-size: cover; /* This assumes you're using a background image for the card */
   }
   
   .trump-option.selected {
     border: 2px solid yellow;
+    box-sizing: border-box;
   }
   
+  #choose-trump {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin: 0 auto;
+    }
+    
   .trick-card-img {
     height: 100px; /* Adjust to match your design */
     width: auto; /* Maintain aspect ratio */
@@ -163,6 +212,7 @@ visibility: hidden;
   
   .player-info {
     grid-row: 1 / 2;  /* Place in the first row */
+    position: relative;
   }
   
   .player-cards {
@@ -215,13 +265,20 @@ visibility: hidden;
   transform: translate3d(calc(24px * (var(--n) - 1)), 0, 0);
 }
 
+#bet-selection {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .bet-option {
   display: inline-block;
   padding: 10px;
   margin: 5px;
   border: 1px solid black;
   cursor: pointer;
-}
+  background-color: white;}
 
 .bet-option.selected {
   background-color: yellow;
@@ -260,11 +317,8 @@ visibility: hidden;
   justify-content: space-around; /* Distribute items evenly along the main axis */
 }
 
-#choose-trump {
-display: none;
-position: relative;
-width: 50%;
-margin: 0 auto;
+.scores-table td {
+  white-space: nowrap;
 }
 
 #player1-header, #player1-score {
@@ -288,6 +342,13 @@ margin: 0 auto;
   height: 105px;
   position: relative; /* Allows child elements to be positioned relative to this container */
   overflow: hidden; /* Keeps the offset cards contained within the boundary */
+}
+
+.empty-card {
+  width: 66.67px; /* 2/3 of the height to maintain a 3:2 ratio */
+  height: 100px; /* Example size, you can adjust as needed */
+  border-radius: 5px;
+  border: 2px dotted #787272; /* Dotted border */
 }
 
 .card-back {

@@ -372,7 +372,7 @@ function chooseTrump() {
   
     // Create clickable events for each trump option
   for (let i = 0; i < trumpOptions.length; i++) {
-    console.log(trumpOptions[i]);
+    // console.log(trumpOptions[i]);
     trumpOptions[i].addEventListener("click", function () {
       // Fetch the suit and rank from the clicked option
       const chosenSuit = this.dataset.suit;
@@ -395,7 +395,7 @@ function chooseTrump() {
     if (chosenOption !== null) {
       // Emit the 'ChooseTrump' event with the chosen bet
       socket.emit('choseTrumpCard', chosenOption);
-      console.log('Trump card chosen: ' + chosenOption.rank + ' ' + chosenOption.suit)
+      // console.log('Trump card chosen: ' + chosenOption.rank + ' ' + chosenOption.suit)
       // Clear the trump options from the screen
       chooseTrumpDiv.style.display = "none";
 
@@ -408,7 +408,7 @@ function chooseTrump() {
       const clickEvent = arguments.callee;
       gameButton.removeEventListener('click', clickEvent);
     } else {
-      console.log('No trump option chosen')
+      // console.log('No trump option chosen')
     }
   });
 }
@@ -658,7 +658,7 @@ function takeAction(gameState) {
 // Listen for gameStateUpdate events
 socket.on('updateGameState', (updatedGameState) => {
     // Update the game UI based on the new game state
-console.log('received updated gameState')
+// console.log('received updated gameState')
   gameState = updatedGameState;
   updateGameUI(gameState);
   takeAction(gameState);
@@ -741,15 +741,16 @@ function updatePictures(gameState) {
   }
   
   // Add starting image if the player is determined
-  if (firstPlayerImage) {
+  if (firstPlayerImage && gameState.lastTrick.length === 0) {
     const img = document.createElement("img");
     img.id = "starting-image"; // Add an id
-    img.src = "res/first_to_start.jpeg";
+    img.src = "res/first_to_start.png";
     img.style.position = "absolute";
     img.style.top = "0";
     img.style.right = "0";
     img.style.height = "20px";
     img.style.width = "20px";
+    img.style.transform = 'rotate(45deg)';
     firstPlayerImage.parentElement.style.position = "relative"; // Set the parent's position to relative
     firstPlayerImage.parentElement.appendChild(img);
   }
@@ -873,7 +874,7 @@ function updatePlayersCards(gameState) {
 function getColorCode(misesScore, roundNumber) {
   // Assuming you have the variable `round` defined
   roundNumber = Math.max(1, roundNumber - 2);
-  console.log("Mises: " + misesScore + ", round: " + roundNumber)
+  // console.log("Mises: " + misesScore + ", round: " + roundNumber)
   // Define color palette
   let colorPalette = [
     '#068fff',
@@ -908,18 +909,24 @@ function updateDeck(numberOfCards) {
     styleSheet.deleteRule(styleSheet.cssRules.length - 1);
   }
 
-  for (let i = 0; i < numberOfCards; i++) {
-    const cardBack = document.createElement('div');
-    cardBack.className = 'card-back';
-    cardBack.style.zIndex = i + 1; // Stack cards in order
-    deckContainer.appendChild(cardBack);
+  if (numberOfCards === 0) {
+    const emptyCard = document.createElement('div');
+    emptyCard.className = 'empty-card';
+    deckContainer.appendChild(emptyCard);
+  } else {
+    for (let i = 0; i < numberOfCards; i++) {
+      const cardBack = document.createElement('div');
+      cardBack.className = 'card-back';
+      cardBack.style.zIndex = i + 1; // Stack cards in order
+      deckContainer.appendChild(cardBack);
 
-    // Add dynamic rule for each card
-    styleSheet.insertRule(`
-      .card-back:nth-child(${i + 1}) {
-        transform: translate(-${.2 * i}px, -${.2 * i}px);
-      }
-    `, styleSheet.cssRules.length);
+      // Add dynamic rule for each card
+      styleSheet.insertRule(`
+        .card-back:nth-child(${i + 1}) {
+          transform: translate(-${.2 * i}px, -${.2 * i}px);
+        }
+      `, styleSheet.cssRules.length);
+    }
   }
 }
 
@@ -1018,45 +1025,63 @@ function updateScoreZone(gameState) {
   }
 
   
-    // Display trick cards
-    let trickCardsDiv = document.getElementById("trick-cards");
-    trickCardsDiv.innerHTML = "";
-    if (gameState.trickCards && gameState.trickCards.length) {
-    
-      // Create ordered array of players
-      let orderedPlayers = [leftPlayer.username, mainPlayer.username, rightPlayer.username];
-    
-      // Create array of trick cards ordered by leftPlayer, mainPlayer, rightPlayer
-      let orderedTrickCards = orderedPlayers.map(player => {
-        let playerIndex = gameState.playOrder.indexOf(player);
-        return gameState.trickCards[playerIndex];
-      });
-      console.log(orderedTrickCards);
-      orderedTrickCards.forEach((card, index) => {
-        let imgElement;
-        if (card) {
-          let cardImageFilename = `res/${card.suit}_${card.rank}.svg`;
-          imgElement = `<img class="trick-card-img" src="${cardImageFilename}" alt="Card: ${card.rank} of ${card.suit}" />`;
-        } else {
-          imgElement = '<div class="trick-card-placeholder"></div>';
-        }
-
-        let playerWhoPlayed = orderedPlayers[index];
-        if (playerWhoPlayed === 'mainPlayer') {
-          playerWhoPlayed += ' middle';
-        }
-
-        let cardDiv = `<div class="trick-card ${playerWhoPlayed}">${imgElement}</div>`;
-    
-        trickCardsDiv.innerHTML += cardDiv;
+  let trickCardsDiv = document.getElementById("trick-cards");
+  trickCardsDiv.innerHTML = "";
+  if (gameState.trickCards && gameState.trickCards.length) {
+  
+    // Create ordered array of players
+    let orderedPlayers = [leftPlayer.username, mainPlayer.username, rightPlayer.username];
+  
+    // Create array of trick cards ordered by leftPlayer, mainPlayer, rightPlayer
+    let orderedTrickCards = orderedPlayers.map(player => {
+      let playerIndex = gameState.playOrder.indexOf(player);
+      return gameState.trickCards[playerIndex];
+    });
+  
+    // console.log(orderedTrickCards);
+  
+    orderedTrickCards.forEach((card, index) => {
+      let imgElement;
+      let rotation = 0; // Default rotation
+      let position = ''; // Default vertical position
       
-      });
-    }
+      // Random rotation variation between -10 and 10 degrees
+      let randomRotation = Math.floor(Math.random() * 21) - 10;
+      
+      if (index === 0) { // First card
+        rotation = 90;
+        // position = 'style="bottom: 20%;"';
+      } else if (index === 2) { // Last card
+        rotation = -90;
+        // position = 'style="bottom: 20%;"';
+      } else if (index === 1) { // Middle card
+        // position = 'style="bottom: 10%;"';
+      }
+      
+      rotation += randomRotation; // Adding random variation
+  
+      if (card) {
+        let cardImageFilename = `res/${card.suit}_${card.rank}.svg`;
+        imgElement = `<img class="trick-card-img" src="${cardImageFilename}" alt="Card: ${card.rank} of ${card.suit}" style="transform: rotate(${rotation}deg);" />`;
+      } else {
+        imgElement = '<div class="trick-card-placeholder"></div>';
+      }
+  
+      let playerWhoPlayed = orderedPlayers[index];
+      if (playerWhoPlayed === 'mainPlayer') {
+        playerWhoPlayed += ' middle';
+      }
+  
+      let cardDiv = `<div class="trick-card ${playerWhoPlayed}" ${position}>${imgElement}</div>`;
+    
+      trickCardsDiv.innerHTML += cardDiv;
+    });
   }
-
+}
+  
 function updateGameUI(gameState) {
-  console.log('Updating the game UI')
-  console.log(gameState)
+  // console.log('Updating the game UI')
+  // console.log(gameState)
 
   updatePictures(gameState);
   updateButtons(gameState);
