@@ -538,8 +538,8 @@ function sendUpdate() {
     for (let player of gameState.players) {
         playerActions += player.username + ': ' + player.action + ', ';
     }
-    console.dir(gameState, { depth: null });
-    console.log(playerActions);
+    // console.dir(gameState, { depth: null });
+    // console.log(playerActions);
 
     io.to(usernameToSocketId['gg']).emit('updateGameState', createPublicGameState('gg'));
     io.to(usernameToSocketId['dd']).emit('updateGameState', createPublicGameState('dd'));
