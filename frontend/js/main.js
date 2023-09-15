@@ -418,6 +418,9 @@ function discardExtraCards() {
   // Get bonus cards count
   let bonusCardsCount = mainPlayer.bonusCards;
   
+  // Initially disable the gameButton
+  gameButton.disabled = true;
+  
   // Get player's cards
   let playerCards = document.querySelectorAll(".player-cards .card");
   
@@ -572,13 +575,23 @@ function playCard() {
   gameButton.textContent = 'Joue une carte';
   gameButton.style.display = 'inline-block'; // Show the button
   
+  // Remove 'greyed-out' and 'is-playable' classes from all cards
+  document.querySelectorAll('.card').forEach((el) => {
+    el.classList.remove('greyed-out', 'is-playable');
+  });
+
   function handleCardSelection(cardElement, card) {
     // Remove the 'selected' class from all cards
     document.querySelectorAll('.card.selected').forEach((el) => {
       el.classList.remove('selected');
     });
     
-    // Add the 'selected' class to the clicked card
+    // Remove 'greyed-out' class from all cards after successfully playing a card
+    // document.querySelectorAll('.card').forEach((el) => {
+    //   el.classList.remove('greyed-out');
+    // });
+
+  // Add the 'selected' class to the clicked card
     cardElement.classList.add('selected');
     gameButton.disabled = false;
 
@@ -614,6 +627,14 @@ function playCard() {
     // If there's only one playable card, automatically select it
     if (playableCards.length === 1) {
       handleCardSelection(cardElement, card);
+    }
+  });
+
+  // Add 'greyed-out' class to non-playable cards
+  player.hand.forEach((card) => {
+    if (!playableCards.includes(card)) {
+      const cardElement = document.querySelector(`.card[data-suit="${card.suit}"][data-rank="${card.rank}"]`);
+      cardElement.classList.add('greyed-out');
     }
   });
 }
@@ -686,6 +707,33 @@ function animatePlayer(playerImage, duration) {
   }, duration);
 }
 
+function textAction(action) {
+  const actionMap = {
+    'startNewGame': '',
+    'waitForPlayer': 'En attente',
+    'chooseTrump': "Choisis l'atout",
+    'discard': 'Jette une carte',
+    'playCard': 'Joue une carte',
+    'bet': 'Choisis une mise',
+    'grabTrick': 'Ramasse le pli'
+  };
+
+  return actionMap[action] || ''; // return empty string if action is not found
+}
+
+function betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade) {
+  if (announcedTricksDisplay === '?') {
+    return "green";
+  }
+  if (madeTricksDisplay === announcedTricksDisplay) {
+    return "blue";
+  }
+  if ((madeTricksDisplay < announcedTricksDisplay) && (announcedTricksDisplay - madeTricksDisplay <= totalTricksToBeMade)){
+    return "green"
+  }
+  return "red"
+}
+
 function updatePictures(gameState) {
   // Map of usernames to image names
   const playerImages = {
@@ -694,34 +742,63 @@ function updatePictures(gameState) {
     "toto": "res/tony.jpeg"
   };
 
-  // Get the player image and bet/trick elements
+  // Get the player image and bet/trick and actions elements
   const leftPlayerImage = document.getElementById("player1-image");
   const leftPlayerBet = document.getElementById("player1-bet");
-  const leftPlayerTricks = document.getElementById("player1-tricks");
 
   const rightPlayerImage = document.getElementById("player2-image");
   const rightPlayerBet = document.getElementById("player2-bet");
-  const rightPlayerTricks = document.getElementById("player2-tricks");
 
   const mainPlayerImage = document.getElementById("player3-image");
   const mainPlayerBet = document.getElementById("player3-bet");
-  const mainPlayerTricks = document.getElementById("player3-tricks");
 
-  // Set the images based on the current players
+  const leftPlayerAction = document.getElementById("player1-action");
+  const rightPlayerAction = document.getElementById("player2-action");
+
+  // Update the actions
   setPlayerPositions(gameState)
+  if (leftPlayer.action && leftPlayer.action.trim() !== '') {
+    const actionText = textAction(leftPlayer.action);
+    leftPlayerAction.innerHTML = `${actionText} <span class='ellipsis'>.<span>.<span>.</span></span></span>`;
+  } else {
+    leftPlayerAction.textContent = '';
+  }
+  
+  if (rightPlayer.action && rightPlayer.action.trim() !== '') {
+    const actionText = textAction(rightPlayer.action);
+    rightPlayerAction.innerHTML = `${actionText} <span class='ellipsis'>.<span>.<span>.</span></span></span>`;
+  } else {
+    rightPlayerAction.textContent = '';
+  }
+  
+// Set the images based on the current players
   mainPlayerImage.src = playerImages[username] || "res/black_image.jpeg";
   leftPlayerImage.src = playerImages[leftPlayer.username] || "res/black_image.jpeg";
   rightPlayerImage.src = playerImages[rightPlayer.username] || "res/black_image.jpeg";
   
   // Set the bets and tricks
-  mainPlayerBet.textContent = mainPlayer.announcedTricks[gameState.round-1] !== undefined ? 'Mise : ' + mainPlayer.announcedTricks[gameState.round-1] : 'Mise : ?';
-  mainPlayerTricks.textContent = mainPlayer.madeTricks[gameState.round-1] !== undefined ? 'Plis : ' + mainPlayer.madeTricks[gameState.round-1] : 'Plis : ?';
-    
-  leftPlayerBet.textContent = leftPlayer.announcedTricks[gameState.round-1] !== undefined ? 'Mise : ' + leftPlayer.announcedTricks[gameState.round-1] : 'Mise : ?';
-  leftPlayerTricks.textContent = leftPlayer.madeTricks[gameState.round-1] !== undefined ? 'Plis : ' + leftPlayer.madeTricks[gameState.round-1] : 'Plis : ?';
-    
-  rightPlayerBet.textContent = rightPlayer.announcedTricks[gameState.round-1] !== undefined ? 'Mise : ' + rightPlayer.announcedTricks[gameState.round-1] : 'Mise : ?';
-  rightPlayerTricks.textContent = rightPlayer.madeTricks[gameState.round-1] !== undefined ? 'Plis : ' + rightPlayer.madeTricks[gameState.round-1] : 'Plis : ?';
+  totalTricks = Math.max(1, gameState.round-2);
+  const totalTricksToBeMade = totalTricks - (mainPlayer.madeTricks[gameState.round-1] + leftPlayer.madeTricks[gameState.round-1] + rightPlayer.madeTricks[gameState.round-1]);
+  let madeTricks = mainPlayer.madeTricks[gameState.round-1];
+  let announcedTricks = mainPlayer.announcedTricks[gameState.round-1];
+  let madeTricksDisplay = madeTricks !== undefined ? madeTricks : '?';
+  let announcedTricksDisplay = announcedTricks !== undefined ? announcedTricks : '?';
+  mainPlayerBet.style.color = betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade);
+  mainPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
+
+  madeTricks = leftPlayer.madeTricks[gameState.round-1];
+  announcedTricks = leftPlayer.announcedTricks[gameState.round-1];
+  madeTricksDisplay = madeTricks !== undefined ? madeTricks : '?';
+  announcedTricksDisplay = announcedTricks !== undefined ? announcedTricks : '?';
+  leftPlayerBet.style.color = betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade);
+  leftPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
+
+  madeTricks = rightPlayer.madeTricks[gameState.round-1];
+  announcedTricks = rightPlayer.announcedTricks[gameState.round-1];
+  madeTricksDisplay = madeTricks !== undefined ? madeTricks : '?';
+  announcedTricksDisplay = announcedTricks !== undefined ? announcedTricks : '?';
+  rightPlayerBet.style.color = betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade);
+  rightPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
   
   // Check if there's already a starting image and remove it
   const oldStartingImage = document.getElementById("starting-image");
@@ -752,6 +829,9 @@ function updatePictures(gameState) {
     img.style.width = "20px";
     img.style.transform = 'rotate(45deg)';
     firstPlayerImage.parentElement.style.position = "relative"; // Set the parent's position to relative
+    if (firstPlayerUsername == username){
+      firstPlayerImage.parentElement.style.position = "absolute"; // Set the parent's position to absolute for the main player
+    }
     firstPlayerImage.parentElement.appendChild(img);
   }
 
@@ -776,10 +856,9 @@ const suitOrder = ['hearts', 'clubs', 'diamonds', 'spades'];
 const rankOrder = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']; // Or whatever order of ranks you use
 
 function adjustCardSpacingForBothZones() {
-  // Adjust for player1-zone
   adjustCardSpacingForZone('player1');
-  // Adjust for player2-zone
   adjustCardSpacingForZone('player2');
+  adjustCardSpacingForZone('player3');
 }
 
 function adjustCardSpacingForZone(zoneId) {
@@ -788,20 +867,24 @@ function adjustCardSpacingForZone(zoneId) {
   const cardElements = zoneElement.querySelectorAll('.card');
 
   // Default card width and desired margin-right
-  const cardWidth = 70.27;
+  let cardWidth = 70.265625;
   let desiredMarginRight = -50;
+  let zoneWidth = zoneElement.offsetWidth - 20;
+  if (zoneId === 'player3') {
+    cardWidth = 98.375;
+    desiredMarginRight = -70;
+    zoneWidth = zoneElement.offsetWidth - 100;
+  }
   
-  const zoneWidth = zoneElement.offsetWidth;
   const estimatedMarginRight = (zoneWidth - cardWidth) / (cardElements.length - 1) - cardWidth;
   
   // If cards take more space than the zone width
-  if (estimatedMarginRight < -50) {
+  if (estimatedMarginRight < desiredMarginRight) {
     desiredMarginRight = estimatedMarginRight;
   }
 
-  const totalWidth = 70 + (cardElements.length - 1) * (70 + desiredMarginRight)
+  const totalWidth = cardWidth + (cardElements.length - 1) * (cardWidth + desiredMarginRight)
   zoneCardsElement.style.width = `${totalWidth}px`;
-  const zoneCardsWidth = zoneCardsElement.offsetWidth;
   
   // Update the margin-right for all cards in the zone
   cardElements.forEach(card => {
@@ -873,7 +956,7 @@ function updatePlayersCards(gameState) {
 
 function getColorCode(misesScore, roundNumber) {
   // Assuming you have the variable `round` defined
-  roundNumber = Math.max(1, roundNumber - 2);
+  // roundNumber = Math.max(1, roundNumber - 2);
   // console.log("Mises: " + misesScore + ", round: " + roundNumber)
   // Define color palette
   let colorPalette = [
@@ -965,8 +1048,8 @@ function updateScoreZone(gameState) {
       const totalAnnouncedTricks = player.announcedTricks.reduce((a, b) => a + b, 0);
 
       playerHeaderDiv.innerHTML = player.username;
-      playerScoreDiv.innerHTML = `${totalAnnouncedTricks} | ${currentScore}`;
-      } else {
+      playerScoreDiv.innerHTML = `${totalAnnouncedTricks} | <strong>${currentScore}</strong>`;
+    } else {
         console.error(`Element with id "player${index + 1}-score" or "player${index + 1}-header" not found`);
       }
     });
@@ -983,6 +1066,7 @@ function updateScoreZone(gameState) {
   }
   // Update mises score
   const misesElement = document.getElementById('mises-score');
+  const misesTableElement = document.getElementById('rounds-mises-table');
   if (misesElement !== null) {
     const misesScore = gameState.players.reduce((total, player) => {
       const announcedTrick = player.announcedTricks[roundNumber - 1];
@@ -996,11 +1080,12 @@ function updateScoreZone(gameState) {
     
     // If misesScore is defined, update the background color of the mises cell
     if (misesScore !== null) {
-      misesElement.style.backgroundColor = getColorCode(misesScore, roundNumber);
+      const roundNumberColor = Math.max(1, roundNumber - 2);
+      misesTableElement.style.backgroundColor = getColorCode(misesScore, roundNumberColor);
     } 
     // If misesScore is not defined, reset the background color to neutral
     else {
-      misesElement.style.backgroundColor = '#f3f3f3';
+      misesTableElement.style.backgroundColor = '#f3f3f3';
     }
   } else {
     console.error('Element with id "mises-score" not found');
