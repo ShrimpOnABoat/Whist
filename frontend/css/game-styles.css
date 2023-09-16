@@ -355,7 +355,7 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .deck-container {
-  width: 70px; /* Adjust the width and height based on your card dimensions */
+  width: 75px; /* Adjust the width and height based on your card dimensions */
   height: 105px;
   position: relative; /* Allows child elements to be positioned relative to this container */
   overflow: hidden; /* Keeps the offset cards contained within the boundary */
@@ -379,6 +379,7 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   background-image: url("../res/Card_back.svg");
   background-size: cover;
   background-position: center; /* Center the background */
+  border-radius: 5px;
 }
 
 .card-back:nth-child(n+2) {
