@@ -368,53 +368,59 @@ function createPublicGameState(username) {
   
 function initalizeGameState() {
     // initialize gameState
-    gameState = {
-      round: 0,
-      deck: generateDeck(),
-      players: [
-          {
-              username: 'gg',
-              hand: [],
-              scores: [],
-              announcedTricks: [],
-              madeTricks: [0],
-              monthlyLosses: 0,
-              bonusCards: 0,
-              connected: false,
-              playerId: 0,
-              action: ''
-              },
-              {
-              username: 'dd',
-              hand: [],
-              scores: [],
-              announcedTricks: [],
-              madeTricks: [0],
-              monthlyLosses: 0,
-              bonusCards: 0,
-              connected: false,
-              playerId: 0,
-              action: ''
-              },
-              {
-              username: 'toto',
-              hand: [],
-              scores: [],
-              announcedTricks: [],
-              madeTricks: [0],
-              monthlyLosses: 0,
-              bonusCards: 0,
-              connected: false,
-              playerId: 0,
-              action: ''
-              }
-      ],
-      trumpCard: [],
-      trickCards: [],
-      lastTrick: [],
-      playOrder: shuffleOrder(['gg', 'dd', 'toto']),
-      startingPlayer: '',
-      lastGameWinners: []
+    const gameStatePath = path.join(__dirname, 'gameState.json');
+
+    if (fs.existsSync(gameStatePath)) {
+        loadGameStateFromFile();
+    } else {
+      gameState = {
+        round: 0,
+        deck: generateDeck(),
+        players: [
+            {
+                username: 'gg',
+                hand: [],
+                scores: [],
+                announcedTricks: [],
+                madeTricks: [0],
+                monthlyLosses: 0,
+                bonusCards: 0,
+                connected: false,
+                playerId: 0,
+                action: ''
+                },
+                {
+                username: 'dd',
+                hand: [],
+                scores: [],
+                announcedTricks: [],
+                madeTricks: [0],
+                monthlyLosses: 0,
+                bonusCards: 0,
+                connected: false,
+                playerId: 0,
+                action: ''
+                },
+                {
+                username: 'toto',
+                hand: [],
+                scores: [],
+                announcedTricks: [],
+                madeTricks: [0],
+                monthlyLosses: 0,
+                bonusCards: 0,
+                connected: false,
+                playerId: 0,
+                action: ''
+                }
+        ],
+        trumpCard: [],
+        trickCards: [],
+        lastTrick: [],
+        playOrder: shuffleOrder(['gg', 'dd', 'toto']),
+        startingPlayer: '',
+        lastGameWinners: []
+    }
   }
 }
 
@@ -530,20 +536,45 @@ function dealCards() {
       }
     }
   }
-  
-  
-function sendUpdate() {
-    console.log('sending update to clients')
-    let playerActions = "";
-    for (let player of gameState.players) {
-        playerActions += player.username + ': ' + player.action + ', ';
-    }
-    // console.dir(gameState, { depth: null });
-    // console.log(playerActions);
 
-    io.to(usernameToSocketId['gg']).emit('updateGameState', createPublicGameState('gg'));
-    io.to(usernameToSocketId['dd']).emit('updateGameState', createPublicGameState('dd'));
-    io.to(usernameToSocketId['toto']).emit('updateGameState', createPublicGameState('toto')); 
+function saveGameStateToFile() {
+  const gameStatePath = path.join(__dirname, 'gameState.json');
+  fs.writeFile(gameStatePath, JSON.stringify(gameState), 'utf8', function(err) {
+      if (err) {
+          console.error('Error saving gameState:', err);
+      } else {
+          console.log('GameState saved successfully.');
+      }
+  });
+}
+
+function sendUpdate() {
+  saveGameStateToFile();  
+  console.log('sending update to clients')
+  let playerActions = "";
+  for (let player of gameState.players) {
+      playerActions += player.username + ': ' + player.action + ', ';
+  }
+  // console.dir(gameState, { depth: null });
+  // console.log(playerActions);
+
+  io.to(usernameToSocketId['gg']).emit('updateGameState', createPublicGameState('gg'));
+  io.to(usernameToSocketId['dd']).emit('updateGameState', createPublicGameState('dd'));
+  io.to(usernameToSocketId['toto']).emit('updateGameState', createPublicGameState('toto')); 
+}
+
+function loadGameStateFromFile() {
+  const gameStatePath = path.join(__dirname, 'gameState.json');
+  if (fs.existsSync(gameStatePath)) {
+      fs.readFile(gameStatePath, 'utf8', function(err, data) {
+          if (err) {
+              console.error('Error reading gameState:', err);
+          } else {
+              gameState = JSON.parse(data);
+              console.log('GameState restored successfully.');
+          }
+      });
+  }
 }
 
 function getPosition(username) {
@@ -881,7 +912,19 @@ socket.on('logout', () => {
       // Send updated game state to all clients
       sendUpdate();
     });
-      
+
+    socket.on('undoBet', () => {
+      // Simply put back the chooseBet state
+      const player = gameState.players.find(player => player.playerId === socket.id);
+
+      if (player.announcedTricks.length === gameState.round) {
+        player.announcedTricks.pop();
+        player.action = 'bet'
+      }
+    sendUpdate();      
+
+    })
+    
     function isScoreTwiceAsHigh(playerIndex) {
         const playerScore = gameState.players[playerIndex].scores[gameState.round - 2];
         const otherPlayerScores = gameState.players.map((player, index) => {
@@ -952,8 +995,20 @@ socket.on('logout', () => {
               }
           } else if (!allAnnounced) {
               // Some players still have to place their bet
-              player.action = 'waitForPlayer';
-          } else {
+              // Check if the player's score is twice as high or higher than other players
+              const currentPlayerUsername = player.username;
+              const playerScore = player.scores[gameState.round - 2];
+              const otherPlayerScores = gameState.players
+                  .filter(p => p.username !== currentPlayerUsername)
+                  .map(p => p.scores[gameState.round - 2]);
+              const isScoreTwiceAsHigh = otherPlayerScores.every((score) => playerScore >= 2 * score);
+
+              if (isScoreTwiceAsHigh && gameState.round > 3) {
+                player.action = 'waitForPlayer';
+              } else {
+                player.action = 'undoBet';
+              }
+            } else {
               // all scores are equal and everybody's bet are made
               // ready to start. All players should be at 'waitForPlayer' except for the one who starts the round. He should be at 'playCard'
               gameState.players.forEach(p => p.action = 'waitForPlayer');
@@ -1001,7 +1056,19 @@ socket.on('logout', () => {
       sendUpdate();
     });
     
-    socket.on('grabTrick', () => {
+    function deleteGameStateFile() {
+      const gameStatePath = path.join(__dirname, 'gameState.json');
+  
+      fs.unlink(gameStatePath, (err) => {
+          if (err) {
+              console.error('Error deleting gameState file:', err);
+          } else {
+              console.log('GameState file deleted successfully.');
+          }
+      });
+  }
+  
+  socket.on('grabTrick', () => {
         const player = gameState.players.find(player => player.playerId === socket.id);
         console.dir(blueColor + 'socket.on(grabTrick) by ' + player.username + resetColor, {depth: null})
       const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
@@ -1045,6 +1112,9 @@ socket.on('logout', () => {
           saveScoreInDB(gameState)
           .then(() => console.log("Scores saved successfully"))
           .catch((error) => console.error("An error occurred:", error));
+
+          // Delete the save file
+          deleteGameStateFile()
               
           // set all actions to startNewGame
           gameState.players.forEach(p => p.action = 'startNewGame')

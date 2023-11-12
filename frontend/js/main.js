@@ -6,6 +6,7 @@ if (!username) {
   window.location.href = '/index.html'; 
 }
 let leftPlayer, rightPlayer, mainPlayer;
+let previousGameState;
 function setPlayerPositions(gameState) {
   const currentIndex = gameState.playOrder.indexOf(username);
 
@@ -292,6 +293,10 @@ let gameButtonNewGameFunction = () => {
 function gameButtonDiscard() {
 }
 
+function gameButtonUndoBet() {
+  socket.emit('undoBet');
+}
+
 function gameButtonFunction(onClickEvent) {
   let gameButtonClone = gameButton.cloneNode(true);
 
@@ -310,10 +315,86 @@ function gameButtonFunction(onClickEvent) {
     case 'discard':
       gameButton.addEventListener('click', gameButtonDiscard);
       break;
+    case 'undoBet':
+      gameButton.addEventListener('click', gameButtonUndoBet);
+      break;
     default:
       break;
   }
 }
+
+const undoPhrases = [
+  "Oups, fausse manœuvre !",
+  "Retour en arrière ?",
+  "Annuler 'announcedTrick' ?",
+  "J'ai glissé, chef !",
+  "On efface tout ?",
+  "Pas sûr de 'announcedTrick'...",
+  "Reculons un peu...",
+  "Mauvaise idée, ça...",
+  "Erreur de casting !",
+  "Zut, mauvais clic !",
+  "On rembobine ?",
+  "Changement de plan !",
+  "Trop précipité, non ?",
+  "AnnouncedTrick, vraiment ?",
+  "Joker, s'il te plaît !",
+  "C'était pour rire !",
+  "On peut négocier ?",
+  "Autre choix, vite !",
+  "Erreur 404, bet not found",
+  "C'était un test...",
+  "Mise à jour requise !",
+  "Ctrl + Z, vite !",
+  "C'était pas mon idée...",
+  "Réfléchissons encore...",
+  "Pouce, je change !",
+  "Pas convaincu là...",
+  "Je préfère annuler !",
+  "Inversion de tendance ?",
+  "Demi-tour tactique !",
+  "C'était une blague ?",
+  "Eille, mauvaise touche!",
+  "On jase-tu de 'announcedTrick'?",
+  "Pas pire erreur, hein?",
+  "Tsé, j'étais distrait!",
+  "Faut qu'j'change ça!",
+  "Pas l'temps d'niaiser!",
+  "C't'une joke, 'announcedTrick'!",
+  "J'ai dérapé su'la souris!",
+  "V'là l'gosse!",
+  "AnnouncedTrick? Trop drôle!",
+  "Oups, faute de frappe!",
+  "Fallait pas cliquer là!",
+  "Retourne su'tes pas!",
+  "Révision d'mon bet là!",
+  "Attends, j'réfléchis...",
+  "C'était pas sérieux!",
+  "Changeons d'idée, là!",
+  "On r'fait l'coup!",
+  "C'pas c'que j'voulais!",
+  "Maudit doigt glissant!",
+  "Ah non, pas ça!",
+  "Vire-capot rapide!",
+  "Sacré 'announcedTrick'!",
+  "On s'reprend, ok?",
+  "Clic erroné, tsé!",
+  "Mauvaise pioche!",
+  "'announcedTrick'? Euh...",
+  "J'ai tout mélangé!",
+  "On annule, pis vite!",
+  "Faisait pas exprès!",
+  "J'voulais pas ça!",
+  "C'était pas mon idée...",
+  "On s'calme le pompon!",
+  "C't'une erreur, là!",
+  "J'reviens en arrière!",
+  "Juste un p'tit oops!",
+  "Hé, faut corriger!",
+  "Ben voyons donc!",
+  "C'tait juste pour voir!",
+  "Pas l'bon bouton, là!"
+];
 
 function updateButtons(gameState) {
   let currentPlayerAction = gameState.players.find(player => player.username === username).action;
@@ -338,11 +419,20 @@ function updateButtons(gameState) {
         gameButton.textContent = "Choisis ta mise";
         gameButton.disabled = true; // Initially disable the button until a bet amount is selected
         gameButton.style.display = 'inline-block'; // Show the button
-          break;
+        break;
       case 'grabTrick':
         gameButton.textContent = "Ramasse le pli";
         gameButton.disabled = false;
         gameButtonFunction('grabTrick')
+        gameButton.style.display = 'inline-block'; // Show the button
+        break;
+      case 'undoBet':
+        let currentPlayerBet = gameState.players.find(player => player.username === username).announcedTricks[gameState.round - 1];
+        const randomPhraseIndex = Math.floor(Math.random() * undoPhrases.length);
+        const randomPhrase = undoPhrases[randomPhraseIndex].replace('announcedTrick', currentPlayerBet);
+        gameButton.textContent = randomPhrase;
+        gameButton.disabled = false;
+        gameButtonFunction('undoBet')
         gameButton.style.display = 'inline-block'; // Show the button
         break;
       default:
@@ -350,15 +440,19 @@ function updateButtons(gameState) {
     }
   }
 
+let selectedTrump = null;
+
 function chooseTrump() {
   const chooseTrumpDiv = document.getElementById("choose-trump");
   const gameButton = document.getElementById("game-button");
   
   // Display the div for choosing trump
-  chooseTrumpDiv.style.display = "block";
-  gameButton.textContent = "Choisis l'atout";
-  gameButton.disabled = true;
-  gameButton.style.display = "block"
+  if (selectedTrump === null) {
+    chooseTrumpDiv.style.display = "block";
+    gameButton.textContent = "Choisis l'atout";
+    gameButton.disabled = true;
+    gameButton.style.display = "block"
+  }
 
   let chosenOption = null; // Variable to store the selected trump option
   
@@ -367,7 +461,9 @@ function chooseTrump() {
   
   // Remove the 'selected' class from all options
       for (let j = 0; j < trumpOptions.length; j++) {
-      trumpOptions[j].classList.remove('selected');
+        if (j !== selectedTrump) {
+          trumpOptions[j].classList.remove('selected');
+        }
     }
   
     // Create clickable events for each trump option
@@ -379,6 +475,9 @@ function chooseTrump() {
       const chosenRank = this.dataset.rank;
       chosenOption = {rank: chosenRank, suit: chosenSuit}; // Store the selected option in the variable
       gameButton.disabled = false;
+
+      // Store in case of refresh
+      selectedTrump = i
 
       // Remove the 'selected' class from all options
       for (let j = 0; j < trumpOptions.length; j++) {
@@ -407,6 +506,7 @@ function chooseTrump() {
       // Remove the event listener to prevent multiple listeners on the button
       const clickEvent = arguments.callee;
       gameButton.removeEventListener('click', clickEvent);
+      selectedTrump = null;
     } else {
       // console.log('No trump option chosen')
     }
@@ -476,6 +576,8 @@ function discardExtraCards() {
   });  
 }
 
+let selectedBet = null;
+
 function placeBet() {
   const betSelection = document.getElementById('bet-selection');
   const gameButton = document.getElementById('game-button');
@@ -527,6 +629,11 @@ function placeBet() {
       betOption.className = 'bet-option';
       betOption.textContent = i.toString();
 
+      if (selectedBet === i) {
+        // Add selected class to clicked bet option
+        betOption.classList.add('selected');        
+      }
+
       betOption.addEventListener('click', function() {
         // Remove selected class from all bet options
         document.querySelectorAll('.bet-option').forEach((el) => {
@@ -546,10 +653,15 @@ function placeBet() {
           gameButton.removeEventListener('click', oldPlaceBetEvent);
         }
 
+        // remember the choice
+        selectedBet = i;
+
         // Create new placeBet event listener
         let newPlaceBetEvent = function() {
           // Emit the 'placeBet' event with the chosen bet
           socket.emit('placeBet', i);
+
+          selectedBet = null;
 
           // Clear the bet options from the screen
           betSelection.innerHTML = '';
@@ -654,7 +766,7 @@ function announceWinner() {
 
 function takeAction(gameState) {
   let currentPlayerAction = gameState.players.find(player => player.username === username).action;
-  
+
   switch(currentPlayerAction) {
     case 'chooseTrump':
       chooseTrump();
@@ -675,15 +787,6 @@ function takeAction(gameState) {
   }
 
 };
-
-// Listen for gameStateUpdate events
-socket.on('updateGameState', (updatedGameState) => {
-    // Update the game UI based on the new game state
-// console.log('received updated gameState')
-  gameState = updatedGameState;
-  updateGameUI(gameState);
-  takeAction(gameState);
-});
 
 function animatePlayer(playerImage, duration) {
   const animationInterval = 500; // in milliseconds
@@ -1165,15 +1268,31 @@ function updateScoreZone(gameState) {
 }
   
 function updateGameUI(gameState) {
-  // console.log('Updating the game UI')
-  // console.log(gameState)
+  mainPlayer = gameState.players.find(player => player.username === username);
+  let previousAction = '';
+  if (previousGameState && previousGameState.players) {
+    const previousPlayer = previousGameState.players.find(p => p.username === username);
+    if (previousPlayer) {
+      previousAction = previousPlayer.action;
+    }
+  }
 
-  updatePictures(gameState);
-  updateButtons(gameState);
+  if (previousGameState === undefined || mainPlayer.action !== previousAction) {
+    updatePictures(gameState);
+    updateButtons(gameState);
+  }
+
   updatePlayersCards(gameState);
   updateScoreZone(gameState);
-  
 }
+
+// Listen for gameStateUpdate events
+socket.on('updateGameState', (updatedGameState) => {
+  gameState = updatedGameState;
+  updateGameUI(gameState);
+  takeAction(gameState);
+  previousGameState = gameState;
+});
 
 document.getElementById('archive-scores').addEventListener('click', () => {
   window.location.href = "/scores.html";
