@@ -197,8 +197,9 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .trump-option.selected {
-  border: 2px solid yellow;
-  box-sizing: border-box;
+  /* border: 2px solid yellow; */
+  /* box-sizing: border-box; */
+  box-shadow: 0px 0px 10px 3px rgba(255, 215, 0, 0.9); 
 }
   
 .trump-card {
@@ -304,11 +305,21 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   transition: filter 0.3s ease;
 }
 
+/* @keyframes animatedBorder {
+  0% { outline-color: gold; }
+  50% { outline-color: transparent; }
+  100% { outline-color: gold; }
+}
+
 .player-cards .card.selected {
-    /* Styles for selected cards */
-  background-color: yellow; /* You can change this */  
-  /* transform: translateY(-20px);  */
-  border: 3px solid yellow;
+  outline: 2px solid gold;
+  animation: animatedBorder 2.5s infinite;
+} */
+
+.player-cards .card.selected {
+  /* background-color: yellow;  */
+  /* outline: 3px solid yellow;  */
+  box-shadow: 0px 0px 10px 3px rgba(255, 215, 0, 0.9); 
 }  
   
 /* Offset each card by 24px to the right of the previous card */
@@ -334,6 +345,7 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
 .bet-option.selected {
   background-color: yellow;
+  box-shadow: 0px 0px 10px 3px rgba(255, 215, 0, 0.9); 
 }  
 
 .player3-zone {
@@ -533,4 +545,9 @@ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 .button-71:disabled:hover {
   box-shadow: none; /* Remove hover box shadow */
   transform: translate(-50%, -50%);
+}
+
+.button-71.button-undo {
+  background-color: rgb(105, 32, 9);
+  border: 1px solid rgb(105, 32, 9);
 }

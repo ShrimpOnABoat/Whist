@@ -399,46 +399,48 @@ const undoPhrases = [
 function updateButtons(gameState) {
   let currentPlayerAction = gameState.players.find(player => player.username === username).action;
   // reset the game-button
-    let gameButtonClone = gameButton.cloneNode(true);
-    gameButton.parentNode.replaceChild(gameButtonClone, gameButton);
-    gameButton = gameButtonClone;
+  gameButton.classList.remove('button-undo'); // Remove the undo styling
+  let gameButtonClone = gameButton.cloneNode(true);
+  gameButton.parentNode.replaceChild(gameButtonClone, gameButton);
+  gameButton = gameButtonClone;
 
-    switch(currentPlayerAction) {
-      case 'startNewGame': 
-        gameButton.textContent = "Nouvelle partie";
-        gameButton.disabled = false;
-        gameButtonFunction('newGame');
-        break;
-      case 'waitForPlayer':
-      case 'chooseTrump':
-      case 'discard':
-      case 'playCard':
-        gameButton.style.display = 'none'; // Hide the button
-        break;
-      case 'bet':
-        gameButton.textContent = "Choisis ta mise";
-        gameButton.disabled = true; // Initially disable the button until a bet amount is selected
-        gameButton.style.display = 'inline-block'; // Show the button
-        break;
-      case 'grabTrick':
-        gameButton.textContent = "Ramasse le pli";
-        gameButton.disabled = false;
-        gameButtonFunction('grabTrick')
-        gameButton.style.display = 'inline-block'; // Show the button
-        break;
-      case 'undoBet':
-        let currentPlayerBet = gameState.players.find(player => player.username === username).announcedTricks[gameState.round - 1];
-        const randomPhraseIndex = Math.floor(Math.random() * undoPhrases.length);
-        const randomPhrase = undoPhrases[randomPhraseIndex].replace('announcedTrick', currentPlayerBet);
-        gameButton.textContent = randomPhrase;
-        gameButton.disabled = false;
-        gameButtonFunction('undoBet')
-        gameButton.style.display = 'inline-block'; // Show the button
-        break;
-      default:
-        console.error(`Unknown action: ${currentPlayerAction}`);
-    }
+  switch(currentPlayerAction) {
+    case 'startNewGame': 
+      gameButton.textContent = "Nouvelle partie";
+      gameButton.disabled = false;
+      gameButtonFunction('newGame');
+      break;
+    case 'waitForPlayer':
+    case 'chooseTrump':
+    case 'discard':
+    case 'playCard':
+      gameButton.style.display = 'none'; // Hide the button
+      break;
+    case 'bet':
+      gameButton.textContent = "Choisis ta mise";
+      gameButton.disabled = true; // Initially disable the button until a bet amount is selected
+      gameButton.style.display = 'inline-block'; // Show the button
+      break;
+    case 'grabTrick':
+      gameButton.textContent = "Ramasse le pli";
+      gameButton.disabled = false;
+      gameButtonFunction('grabTrick')
+      gameButton.style.display = 'inline-block'; // Show the button
+      break;
+    case 'undoBet':
+      let currentPlayerBet = gameState.players.find(player => player.username === username).announcedTricks[gameState.round - 1];
+      const randomPhraseIndex = Math.floor(Math.random() * undoPhrases.length);
+      const randomPhrase = undoPhrases[randomPhraseIndex].replace('announcedTrick', currentPlayerBet);
+      gameButton.textContent = randomPhrase;
+      gameButton.disabled = false;
+      gameButtonFunction('undoBet');
+      gameButton.style.display = 'inline-block'; // Show the button
+      gameButton.classList.add('button-undo'); // Add the undo styling
+      break;
+    default:
+      console.error(`Unknown action: ${currentPlayerAction}`);
   }
+}
 
 let selectedTrump = null;
 
