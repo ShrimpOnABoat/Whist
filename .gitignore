@@ -7,3 +7,4 @@ backend/scores/
 node_modules/
 package-lock.json
 frontend/js/config.js
+backend/gameState.json
