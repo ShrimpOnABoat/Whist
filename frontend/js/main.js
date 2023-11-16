@@ -337,7 +337,7 @@ const undoPhrases = [
   "On rembobine ?",
   "Changement de plan !",
   "Trop précipité, non ?",
-  "AnnouncedTrick, vraiment ?",
+  "'announcedTrick', vraiment ?",
   "Joker, s'il te plaît !",
   "C'était pour rire !",
   "On peut négocier ?",
@@ -355,15 +355,15 @@ const undoPhrases = [
   "Demi-tour tactique !",
   "C'était une blague ?",
   "Eille, mauvaise touche!",
-  "On jase-tu de 'announcedTrick'?",
+  "On jase-tu de 'announcedTrick' ?",
   "Pas pire erreur, hein?",
   "Tsé, j'étais distrait!",
   "Faut qu'j'change ça!",
   "Pas l'temps d'niaiser!",
-  "C't'une joke, 'announcedTrick'!",
+  "C't'une joke, 'announcedTrick' !",
   "J'ai dérapé su'la souris!",
   "V'là l'gosse!",
-  "AnnouncedTrick? Trop drôle!",
+  "'announcedTrick'? Trop drôle!",
   "Oups, faute de frappe!",
   "Fallait pas cliquer là!",
   "Retourne su'tes pas!",
@@ -376,11 +376,11 @@ const undoPhrases = [
   "Maudit doigt glissant!",
   "Ah non, pas ça!",
   "Vire-capot rapide!",
-  "Sacré 'announcedTrick'!",
+  "Sacré 'announcedTrick' !",
   "On s'reprend, ok?",
   "Clic erroné, tsé!",
   "Mauvaise pioche!",
-  "'announcedTrick'? Euh...",
+  "'announcedTrick' ? Euh...",
   "J'ai tout mélangé!",
   "On annule, pis vite!",
   "Faisait pas exprès!",
@@ -393,6 +393,8 @@ const undoPhrases = [
   "Hé, faut corriger!",
   "Ben voyons donc!",
   "C'tait juste pour voir!",
+  "Ca l'a pas d'allure!",
+  "'announcedTrick' ? Ca l'a pas d'bon sens!",
   "Pas l'bon bouton, là!"
 ];
 
@@ -430,7 +432,7 @@ function updateButtons(gameState) {
     case 'undoBet':
       let currentPlayerBet = gameState.players.find(player => player.username === username).announcedTricks[gameState.round - 1];
       const randomPhraseIndex = Math.floor(Math.random() * undoPhrases.length);
-      const randomPhrase = undoPhrases[randomPhraseIndex].replace('announcedTrick', currentPlayerBet);
+      const randomPhrase = undoPhrases[randomPhraseIndex].replace("'announcedTrick'", currentPlayerBet);
       gameButton.textContent = randomPhrase;
       gameButton.disabled = false;
       gameButtonFunction('undoBet');
@@ -1118,6 +1120,8 @@ function updateDeck(numberOfCards) {
   }
 }
 
+let cardRotations = {}; // Object to store card rotations
+
 function updateScoreZone(gameState) {
   // Assuming the gameState object has a 'round' property and a 'players' array
   // And each player object has a 'username' property and a 'scores' array
@@ -1234,9 +1238,10 @@ function updateScoreZone(gameState) {
       let imgElement;
       let rotation = 0; // Default rotation
       let position = ''; // Default vertical position
-      
-      // Random rotation variation between -10 and 10 degrees
-      let randomRotation = Math.floor(Math.random() * 21) - 10;
+      let cardIdentifier = '';
+      if (card) {
+        cardIdentifier = `${card.suit}_${card.rank}`; // Unique identifier for the card
+      }
       
       if (index === 0) { // First card
         rotation = 90;
@@ -1247,8 +1252,15 @@ function updateScoreZone(gameState) {
       } else if (index === 1) { // Middle card
         // position = 'style="bottom: 10%;"';
       }
-      
-      rotation += randomRotation; // Adding random variation
+      console.log(cardRotations)
+      if (!cardRotations[cardIdentifier]) {
+        // Random rotation variation between -10 and 10 degrees
+        let randomRotation = Math.floor(Math.random() * 21) - 10;
+        rotation += randomRotation; // Adding random variation
+        cardRotations[cardIdentifier] = rotation;
+      } else {
+        rotation = cardRotations[cardIdentifier];
+      }
   
       if (card) {
         let cardImageFilename = `res/${card.suit}_${card.rank}.svg`;
@@ -1266,6 +1278,9 @@ function updateScoreZone(gameState) {
     
       trickCardsDiv.innerHTML += cardDiv;
     });
+  } else {
+    // no trick cards on the table
+    cardRotations = {}; // reinitialize cards rotations
   }
 }
   
