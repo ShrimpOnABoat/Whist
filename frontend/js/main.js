@@ -1283,19 +1283,25 @@ function updateScoreZone(gameState) {
     cardRotations = {}; // reinitialize cards rotations
   }
 }
-  
-function updateGameUI(gameState) {
+
+function isPlayerActionSameAsBefore(gameState) {
+  // Determine if last action is the same as current one
+  // if yes do not update pictures or buttons
   mainPlayer = gameState.players.find(player => player.username === username);
-  let previousAction = '';
+  let previousAction = 'not an action';
   if (previousGameState && previousGameState.players) {
     const previousPlayer = previousGameState.players.find(p => p.username === username);
     if (previousPlayer) {
       previousAction = previousPlayer.action;
     }
   }
+  return mainPlayer.action === previousAction
+}
 
-  if (previousGameState === undefined || mainPlayer.action !== previousAction) {
-    updatePictures(gameState);
+function updateGameUI(gameState) {
+  updatePictures(gameState);
+
+  if (!isPlayerActionSameAsBefore(gameState)) {
     updateButtons(gameState);
   }
 
