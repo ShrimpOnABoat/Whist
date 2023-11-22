@@ -517,31 +517,40 @@ function chooseTrump() {
   });
 }
 
+let selectedDiscard = []
 
 function discardExtraCards() {
   // Get bonus cards count
   let bonusCardsCount = mainPlayer.bonusCards;
   
   // Initially disable the gameButton
-  gameButton.disabled = true;
-  
+  // gameButton.disabled = true;
+    
   // Get player's cards
   let playerCards = document.querySelectorAll(".player-cards .card");
   
   playerCards.forEach(card => {
-      card.addEventListener('click', () => {
+        // Check if the card was previously selected
+        const cardIdentifier = `${card.getAttribute('data-rank')}_${card.getAttribute('data-suit')}`;
+        if (selectedDiscard.includes(cardIdentifier)) {
+            card.classList.add("selected");
+        }
+        
+        card.addEventListener('click', () => {
           if (card.classList.contains("selected")) {
               card.classList.remove("selected");
+              selectedDiscard = selectedDiscard.filter(id => id !== cardIdentifier); // Remove from selectedDiscard
           } else {
               // Count selected cards
               let selectedCards = document.querySelectorAll(".player-cards .card.selected").length;
 
               // If we haven't selected all necessary bonus cards, we can select another one
               if (selectedCards < bonusCardsCount) {
-                  card.classList.add("selected");
+                card.classList.add("selected");
+                selectedDiscard.push(cardIdentifier); // Add to selectedDiscard
               }
-          }
-          
+            }
+                
           // Count selected cards
           let selectedCards = document.querySelectorAll(".player-cards .card.selected").length;
 
@@ -550,6 +559,9 @@ function discardExtraCards() {
       });
   });
   
+  let selectedCards = document.querySelectorAll(".player-cards .card.selected").length;
+  gameButton.disabled = !(selectedCards === bonusCardsCount);
+
   // Set game button
   if (bonusCardsCount === 1) {
     gameButton.textContent = "Jette une carte";
@@ -557,7 +569,6 @@ function discardExtraCards() {
     gameButton.textContent = "Jette deux cartes";
   }
   gameButton.style.display = "block"
-  // gameButtonFunction('discard');
   // Get data of selected cards
   gameButton.addEventListener('click', function () {
     let selectedCardsData = Array.from(document.querySelectorAll(".player-cards .card.selected")).map(card => {
@@ -568,6 +579,7 @@ function discardExtraCards() {
     });
     // Emit 'discard' event to server
     socket.emit('discard', selectedCardsData);
+    selectedDiscard = [];
     // Reset the game button
     gameButton.textContent = "Atout choisi";
     gameButton.style.display = "none";
