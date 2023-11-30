@@ -1541,8 +1541,8 @@ socket.on('updateGameState', async (updatedGameState) => {
   gameState = updatedGameState;
   
   updatePictures(gameState);
-  await updateCards(gameState); // Wait for the card dealing to complete
   updateScoreZone(gameState);
+  await updateCards(gameState); // Wait for the card dealing to complete
 
   if (!isPlayerActionSameAsBefore(gameState)) {
     updateButtons(gameState);
