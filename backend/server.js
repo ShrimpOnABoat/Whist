@@ -419,10 +419,19 @@ function initalizeGameState() {
         lastTrick: [],
         playOrder: shuffleOrder(['gg', 'dd', 'toto']),
         startingPlayer: '',
-        lastGameWinners: []
+        lastGameWinners: [],
+        cardMovement: ['']
     }
   }
 }
+
+/* cardMovement
+- Deal: ['Deal']
+- Discard: 
+- Play: 
+- Grab Trick: 
+// 
+*/
 
 initalizeGameState();
 
@@ -644,6 +653,8 @@ function newRound() {
     // reset last trick
     gameState.lastTrick = []
     
+    // Update card movements
+    gameState.cardMovement = ['Deal']
    
     // initialize deck of cards and remove cards from eveywhere else
     gameState.deck = generateDeck();
@@ -801,346 +812,367 @@ function newRound() {
 
     // In your server-side code
 socket.on('logout', () => {
-    console.dir(blueColor + 'socket.on(logout)' + resetColor, {depth: null})
-    // Find the player that has disconnected
-    const playerIndex = gameState.players.findIndex(player => player.playerId === socket.id);
+  console.dir(blueColor + 'socket.on(logout)' + resetColor, {depth: null})
+  // Find the player that has disconnected
+  const playerIndex = gameState.players.findIndex(player => player.playerId === socket.id);
   
-    if (playerIndex !== -1) {
-      // Update the player's 'connected' status
-      gameState.players[playerIndex].connected = false;
-  
-      // Alternatively, you can remove the player from the game state entirely
-      // gameState.players.splice(playerIndex, 1);
-  
-      // Broadcast the updated game state to all connected clients
-      sendUpdate()
-      // io.emit('gameStateUpdate', gameState);
+  if (playerIndex !== -1) {
+    // Update the player's 'connected' status
+    gameState.players[playerIndex].connected = false;
+    
+    // Alternatively, you can remove the player from the game state entirely
+    // gameState.players.splice(playerIndex, 1);
+    
+    // Broadcast the updated game state to all connected clients
+    sendUpdate()
+    // io.emit('gameStateUpdate', gameState);
   }
-  });
-    
-    /*
-    List of possible actions:
-        startNewGame: starts a new game
-        waitForPlayer: wiat for other player to do something
-        chooseTrump: choose trump color
-        discard: discard one or two cards
-        bet: place a bet
-        playCard: play a card
-        grabTrick: grab the trick
-    */
-   socket.on('newGame', () => {
-       console.dir(blueColor + 'socket.on(newGame)' + resetColor, {depth: null})
-       newGame();
-       newRound();
-       console.log(gameState)
-       console.log("Starting game with 3 players");
-       // send update to clients 
-       sendUpdate();
-    })
+});
 
-    socket.on('choseTrumpCard', (card) => {
-        // Update the game state with the chosen trump card.
-        const player = gameState.players.find(player => player.playerId === socket.id);
-        console.dir(blueColor + 'socket.on(choseTrumpCard) from ' + player.username + ' with card: ' + card + resetColor, {depth: null})
-        gameState.trumpCard = card;
-      
-        // get the other players
-        const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
-        
-        // Get the last scores of the other players
-        const score1 = otherPlayers[0].scores[otherPlayers[0].scores.length - 1];
-        const score2 = otherPlayers[1].scores[otherPlayers[1].scores.length - 1];
-      
-        if (score1 !== score2) {
-          // if the players have different scores, the one with the lowest score should discard
-          if (score1 < score2) {
-            otherPlayers[0].action = 'discard';
-          } else {
-            otherPlayers[1].action = 'discard';
-          }
-        }
-      
-        // update action of the player who chose the trump card
-        player.action = 'bet';
-      
-        // send update to clients
-        sendUpdate();
-    });
-    
-    socket.on('discard', (cards) => {
-      const player = gameState.players.find(player => player.playerId === socket.id);
-      console.dir(blueColor + 'socket.on(discard) from ' + player.username + ' with cards: ' + cards + resetColor, {depth: null})
-      const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
+/*
+List of possible actions:
+startNewGame: starts a new game
+waitForPlayer: wiat for other player to do something
+chooseTrump: choose trump color
+discard: discard one or two cards
+bet: place a bet
+playCard: play a card
+grabTrick: grab the trick
+*/
 
-      // Check if it's the player's turn to discard
-      if (player.action === 'discard') {
-        // Remove the discarded cards from the player's hand
-        player.hand = player.hand.filter(handCard =>
-          !cards.some(card => card.rank === handCard.rank && card.suit === handCard.suit)
-        );
+socket.on('newGame', () => {
+  console.dir(blueColor + 'socket.on(newGame)' + resetColor, {depth: null})
+  newGame();
+  newRound();
+  console.log(gameState)
+  console.log("Starting game with 3 players");
+  // send update to clients 
+  sendUpdate();
+})
 
-      // Get the maximum value of bonusCards from each player
-      const maxBonusCards = gameState.players.map((player) => player.bonusCards).reduce((maxValue, current) => Math.max(maxValue, current), 0);
-
-      let lastPlayer;
-      if (gameState.round === 12 && maxBonusCards === 2 && getPosition(player.username) === 2) {
-        // find the last player
-        for (let i = 0; i < gameState.players.length; i++) {
-          const player = gameState.players[i];
-          const position = getPosition(player.username);
-          if (position === 3) {
-            lastPlayer = player;
-          }
-        }
-        console.log(player.username + ' donne sa carte à ' + lastPlayer.username)
-        lastPlayer.hand.push(cards[0])
-      }
-      
-        const playerRank = getPosition(player.username);
-    
-        // Update player actions based on the player's rank
-        if (playerRank === 2) {
-          player.action = 'bet';
-        } else if (playerRank === 3 && otherPlayers.every(p => p.action === 'waitForPlayer')) {
-            player.action = 'waitForPlayer';
-            gameState.players.find(p => p.username === gameState.startingPlayer).action = 'playCard';
-        } else {
-          player.action = 'waitForPlayer';
-        }
-      }
-    
-      // Send updated game state to all clients
-      sendUpdate();
-    });
-
-    socket.on('undoBet', () => {
-      // Simply put back the chooseBet state
-      const player = gameState.players.find(player => player.playerId === socket.id);
-
-      if (player.announcedTricks.length === gameState.round) {
-        player.announcedTricks.pop();
-        player.action = 'bet'
-      }
-    sendUpdate();      
-
-    })
-    
-    function isScoreTwiceAsHigh(playerIndex) {
-        const playerScore = gameState.players[playerIndex].scores[gameState.round - 2];
-        const otherPlayerScores = gameState.players.map((player, index) => {
-          if (index !== playerIndex) {
-            return player.scores[gameState.round - 2];
-          }
-          return undefined;
-        });
-      
-        for (let i = 0; i < otherPlayerScores.length; i++) {
-          if (typeof otherPlayerScores[i] !== 'undefined' && playerScore < 2 * otherPlayerScores[i]) {
-            return false;
-          }
-        }
-      
-        return true;
-      }
-                  
-      
-    socket.on('placeBet', (betValue) => {
-        // Update the game state with the player's bet.
-        const player = gameState.players.find(player => player.playerId === socket.id);
-        console.dir(blueColor + 'socket.on(placeBet) from ' + player.username + ' of value: ' + betValue + resetColor, {depth: null})
-      
-      // update bet
-      if (player.announcedTricks.length === gameState.round-1) {
-        // if player needs to roll a die
-        const playerIndex = gameState.players.findIndex((p) => p === player);
-        if (isScoreTwiceAsHigh(playerIndex) && gameState.round > 3) {
-            const dieRoll = Math.floor(Math.random() * (gameState.round - 1));
-            player.announcedTricks.push(dieRoll);
-            console.log(player.username + ' a tiré au sort: ' + dieRoll)
-        } else {
-            player.announcedTricks.push(betValue);
-        }
+socket.on('choseTrumpCard', (card) => {
+  // Update the game state with the chosen trump card.
+  const player = gameState.players.find(player => player.playerId === socket.id);
+  console.dir(blueColor + 'socket.on(choseTrumpCard) from ' + player.username + ' with card: ' + card + resetColor, {depth: null})
+  gameState.trumpCard = card;
+  
+  // get the other players
+  const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
+  
+  // Get the last scores of the other players
+  const score1 = otherPlayers[0].scores[otherPlayers[0].scores.length - 1];
+  const score2 = otherPlayers[1].scores[otherPlayers[1].scores.length - 1];
+  
+  if (score1 !== score2) {
+    // if the players have different scores, the one with the lowest score should discard
+    if (score1 < score2) {
+      otherPlayers[0].action = 'discard';
+    } else {
+      otherPlayers[1].action = 'discard';
     }
-        
-      // Find the index of the current player in the play order
-      let currentPlayerIndex = gameState.playOrder.indexOf(player.username);
-      
-      // Check if all players have announced their tricks
-      const allAnnounced = gameState.players.every(player => player.announcedTricks.length === gameState.round);
-
-      // If it's an early round, check if all players have placed a bet
-      if(gameState.round < 4) {
-          if (gameState.players.every(p => p.announcedTricks.length === gameState.round)) {
-              // ready to start. All players should be at 'waitForPlayer' except for the one who starts the round. He should be at 'playCard'
-              gameState.players.forEach(p => p.action = 'waitForPlayer');
-              gameState.players.find(p => p.username === gameState.playOrder[gameState.round-1]).action = 'playCard';
-          } else {
-              // Get the next player according to the play order
-              let nextPlayerUsername = gameState.playOrder[(currentPlayerIndex + 1) % gameState.playOrder.length];
-              const nextPlayer = gameState.players.find(p => p.username === nextPlayerUsername);
-  
-              // Set the action for the next player who needs to place a bet and for others to 'waitForPlayer'
-              gameState.players.forEach(p => p.action = (p === nextPlayer ? 'bet' : 'waitForPlayer'));
-          }
-        } else {
-          // Check if the player must discard cards => action = discard
-          if (!allScoresEqual() && allAnnounced) {
-              // Tous les joueurs ont misé, et il y a un dernier joueur. Il doit jeter sa carte
-              for (let p of gameState.players) {
-                  if (getPosition(p.username) === 3) {
-                      p.action = 'discard';
-                  } else {
-                      p.action = 'waitForPlayer';
-                  }
-              }
-          } else if (!allAnnounced) {
-              // Some players still have to place their bet
-              // Check if the player's score is twice as high or higher than other players
-              const currentPlayerUsername = player.username;
-              const playerScore = player.scores[gameState.round - 2];
-              const otherPlayerScores = gameState.players
-                  .filter(p => p.username !== currentPlayerUsername)
-                  .map(p => p.scores[gameState.round - 2]);
-              const isScoreTwiceAsHigh = otherPlayerScores.every((score) => playerScore >= 2 * score);
-
-              if (isScoreTwiceAsHigh && gameState.round > 3) {
-                player.action = 'waitForPlayer';
-              } else {
-                player.action = 'undoBet';
-              }
-            } else {
-              // all scores are equal and everybody's bet are made
-              // ready to start. All players should be at 'waitForPlayer' except for the one who starts the round. He should be at 'playCard'
-              gameState.players.forEach(p => p.action = 'waitForPlayer');
-              gameState.players.find(p => p.username === gameState.startingPlayer).action = 'playCard';
-          }
-        }
-      
-      // Then broadcast this updated game state to all clients.
-      sendUpdate();
-  });
-  
-  socket.on('playCard', (card) => {
-      // Update the game state with the card played by the player.
-      const player = gameState.players.find(player => player.playerId === socket.id);
-      console.dir(blueColor + 'socket.on(playCard) from ' + player.username + ': ' + card + resetColor, {depth: null})
-      const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
-      const playOrderPosition = gameState.playOrder.indexOf(player.username); // get playOrder position
-    
-      // remove the card from the player's hand and place it on the trickCards array, at the position matching the one on playOrder
-      const cardIndex = player.hand.findIndex(handCard => handCard.rank === card.rank && handCard.suit === card.suit);
-      if (cardIndex !== -1) {
-        player.hand.splice(cardIndex, 1); // remove card from hand
-        gameState.trickCards[playOrderPosition] = card; // place card in trickCards
-      }
-    
-      // update players' actions
-      // if all cards are played (trickCards contains 3 cards), the player who wins the trick gets the grabTrick action and the others get 'waitForPlayer'
-      if (gameState.trickCards.filter(Boolean).length === gameState.players.length) {
-              // assuming you have a function to determine the winner, 'determineTrickWinner'
-        const winner = determineTrickWinner();
-        gameState.players.forEach(p => {
-          console.log(winner)
-          p.action = p.username === winner.username ? 'grabTrick' : 'waitForPlayer';
-        });
-      } else {
-        // otherwise, the next player in the playOrder gets 'playCard' and the others should be at 'waitForPlayer'
-        const nextPlayerIndex = (playOrderPosition + 1) % gameState.players.length; // gets the index of the next player
-        const nextPlayer = gameState.players.find(player => player.username === gameState.playOrder[nextPlayerIndex]);
-        gameState.players.forEach(p => {
-          p.action = p.username === nextPlayer.username ? 'playCard' : 'waitForPlayer';
-        });
-      }
-    
-      // Then broadcast this updated game state to all clients.
-      sendUpdate();
-    });
-    
-    function deleteGameStateFile() {
-      const gameStatePath = path.join(__dirname, 'gameState.json');
-  
-      fs.unlink(gameStatePath, (err) => {
-          if (err) {
-              console.error('Error deleting gameState file:', err);
-          } else {
-              console.log('GameState file deleted successfully.');
-          }
-      });
   }
   
-  socket.on('grabTrick', () => {
-        const player = gameState.players.find(player => player.playerId === socket.id);
-        console.dir(blueColor + 'socket.on(grabTrick) by ' + player.username + resetColor, {depth: null})
-      const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
-      
-      // Update the number of tricks done by this player
-      player.madeTricks[gameState.round-1] += 1;
-      console.log(player.username + ' now has ' + player.madeTricks[gameState.round-1] + ' tricks')
-    
-      // Save and Clear trickCards
-      gameState.lastTrick = gameState.trickCards;
-      gameState.trickCards = [];
-    
-      // Check if it's the last trick
-      const isLastTrick = player.hand.length === 0; // assuming that a round corresponds to a trick
-      console.log('This is the last trick of the round: ' + isLastTrick)
-    
-      // If it's not the last trick
-      if (!isLastTrick) {
-        // Set startingPlayer to the current player
-        gameState.startingPlayer = player.username;
-    
-        // Set the actions to waitForPlayer or playCard
-        player.action = 'playCard';
-        otherPlayers.forEach(p => p.action = 'waitForPlayer');
-      }
-    
-      // If it's the last trick
-      if (isLastTrick) {
-        // If it's not the last round
-        const isLastRound = gameState.round === 12; // assuming there are 12 rounds in a game
-        console.log('This is the last round: ' + isLastRound)
-    
-        // Update score
-        calculateAndStoreScore();
+  // update action of the player who chose the trump card
+  player.action = 'bet';
   
-        if (!isLastRound) {
-          newRound();
-        } else {
-          // If it's the last round and last trick
-    
-          saveScoreInDB(gameState)
-          .then(() => console.log("Scores saved successfully"))
-          .catch((error) => console.error("An error occurred:", error));
+  // Update card movements
+  gameState.cardMovement = ['']
+  
+  // send update to clients
+  sendUpdate();
+});
 
-          // Delete the save file
-          deleteGameStateFile()
-              
-          // set all actions to startNewGame
-          gameState.players.forEach(p => p.action = 'startNewGame')
-          
-          // Calculate the highest score among all players
-          const highestScore = Math.max(...gameState.players.map(player => player.scores[gameState.round - 1]));
-          
-          // Identify all players with the highest score
-          const winners = gameState.players.filter(player => player.scores[gameState.round - 1] === highestScore);
-          
-          // Get the usernames of the winners
-          const winnerUsernames = winners.map(player => player.username);
-          
-          // Assign the array of winner usernames to the lastGameWinners attribute
-          gameState.lastGameWinners = winnerUsernames;
+socket.on('discard', (cards) => {
+  const player = gameState.players.find(player => player.playerId === socket.id);
+  console.dir(blueColor + 'socket.on(discard) from ' + player.username + ' with cards: ' + cards + resetColor, {depth: null})
+  const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
+  
+  // Check if it's the player's turn to discard
+  if (player.action === 'discard') {
+    // Remove the discarded cards from the player's hand
+    player.hand = player.hand.filter(handCard => !cards.some(card => card.rank === handCard.rank && card.suit === handCard.suit));
+    
+    // Get the maximum value of bonusCards from each player
+    const maxBonusCards = gameState.players.map((player) => player.bonusCards).reduce((maxValue, current) => Math.max(maxValue, current), 0);
+    
+    let lastPlayer;
+    if (gameState.round === 12 && maxBonusCards === 2 && getPosition(player.username) === 2) {
+      // find the last player
+      for (let i = 0; i < gameState.players.length; i++) {
+        const player = gameState.players[i];
+        const position = getPosition(player.username);
+        if (position === 3) {
+          lastPlayer = player;
         }
       }
-      // Then broadcast the updated game state to all clients.
-      sendUpdate();
+      console.log(player.username + ' donne sa carte à ' + lastPlayer.username)
+      lastPlayer.hand.push(cards[0])
+    }
+    
+    const playerRank = getPosition(player.username);
+    
+    // Update player actions based on the player's rank
+    if (playerRank === 2) {
+      player.action = 'bet';
+    } else if (playerRank === 3 && otherPlayers.every(p => p.action === 'waitForPlayer')) {
+      player.action = 'waitForPlayer';
+      gameState.players.find(p => p.username === gameState.startingPlayer).action = 'playCard';
+    } else {
+      player.action = 'waitForPlayer';
+    }
+  }
+  
+  // Update card movements
+  gameState.cardMovement = ['Discard']
+  
+  // Send updated game state to all clients
+  sendUpdate();
+});
+
+socket.on('undoBet', () => {
+  // Simply put back the chooseBet state
+  const player = gameState.players.find(player => player.playerId === socket.id);
+  
+  if (player.announcedTricks.length === gameState.round) {
+    player.announcedTricks.pop();
+    player.action = 'bet'
+  }
+  
+  // Update card movements
+  gameState.cardMovement = ['']
+  
+  // Update card movements
+  gameState.cardMovement = ['']
+  
+  sendUpdate();      
+  
+})
+
+function isScoreTwiceAsHigh(playerIndex) {
+  const playerScore = gameState.players[playerIndex].scores[gameState.round - 2];
+  const otherPlayerScores = gameState.players.map((player, index) => {
+    if (index !== playerIndex) {
+      return player.scores[gameState.round - 2];
+    }
+    return undefined;
+  });
+  
+  for (let i = 0; i < otherPlayerScores.length; i++) {
+    if (typeof otherPlayerScores[i] !== 'undefined' && playerScore < 2 * otherPlayerScores[i]) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+
+socket.on('placeBet', (betValue) => {
+  // Update the game state with the player's bet.
+  const player = gameState.players.find(player => player.playerId === socket.id);
+  console.dir(blueColor + 'socket.on(placeBet) from ' + player.username + ' of value: ' + betValue + resetColor, {depth: null})
+  
+  // update bet
+  if (player.announcedTricks.length === gameState.round-1) {
+    // if player needs to roll a die
+    const playerIndex = gameState.players.findIndex((p) => p === player);
+    if (isScoreTwiceAsHigh(playerIndex) && gameState.round > 3) {
+      const dieRoll = Math.floor(Math.random() * (gameState.round - 1));
+      player.announcedTricks.push(dieRoll);
+      console.log(player.username + ' a tiré au sort: ' + dieRoll)
+    } else {
+      player.announcedTricks.push(betValue);
+    }
+  }
+  
+  // Find the index of the current player in the play order
+  let currentPlayerIndex = gameState.playOrder.indexOf(player.username);
+  
+  // Check if all players have announced their tricks
+  const allAnnounced = gameState.players.every(player => player.announcedTricks.length === gameState.round);
+  
+  // If it's an early round, check if all players have placed a bet
+  if(gameState.round < 4) {
+    if (gameState.players.every(p => p.announcedTricks.length === gameState.round)) {
+      // ready to start. All players should be at 'waitForPlayer' except for the one who starts the round. He should be at 'playCard'
+      gameState.players.forEach(p => p.action = 'waitForPlayer');
+      gameState.players.find(p => p.username === gameState.playOrder[gameState.round-1]).action = 'playCard';
+    } else {
+      // Get the next player according to the play order
+      let nextPlayerUsername = gameState.playOrder[(currentPlayerIndex + 1) % gameState.playOrder.length];
+      const nextPlayer = gameState.players.find(p => p.username === nextPlayerUsername);
+      
+      // Set the action for the next player who needs to place a bet and for others to 'waitForPlayer'
+      gameState.players.forEach(p => p.action = (p === nextPlayer ? 'bet' : 'waitForPlayer'));
+    }
+  } else {
+    // Check if the player must discard cards => action = discard
+    if (!allScoresEqual() && allAnnounced) {
+      // Tous les joueurs ont misé, et il y a un dernier joueur. Il doit jeter sa carte
+      for (let p of gameState.players) {
+        if (getPosition(p.username) === 3) {
+          p.action = 'discard';
+        } else {
+          p.action = 'waitForPlayer';
+        }
+      }
+    } else if (!allAnnounced) {
+      // Some players still have to place their bet
+      // Check if the player's score is twice as high or higher than other players
+      const currentPlayerUsername = player.username;
+      const playerScore = player.scores[gameState.round - 2];
+      const otherPlayerScores = gameState.players
+      .filter(p => p.username !== currentPlayerUsername)
+      .map(p => p.scores[gameState.round - 2]);
+      const isScoreTwiceAsHigh = otherPlayerScores.every((score) => playerScore >= 2 * score);
+      
+      if (isScoreTwiceAsHigh && gameState.round > 3) {
+        player.action = 'waitForPlayer';
+      } else {
+        player.action = 'undoBet';
+      }
+    } else {
+      // all scores are equal and everybody's bet are made
+      // ready to start. All players should be at 'waitForPlayer' except for the one who starts the round. He should be at 'playCard'
+      gameState.players.forEach(p => p.action = 'waitForPlayer');
+      gameState.players.find(p => p.username === gameState.startingPlayer).action = 'playCard';
+    }
+  }
+  
+  // Update card movements
+  gameState.cardMovement = ['']
+  
+  // Then broadcast this updated game state to all clients.
+  sendUpdate();
+});
+
+socket.on('playCard', (card) => {
+  // Update the game state with the card played by the player.
+  const player = gameState.players.find(player => player.playerId === socket.id);
+  console.dir(blueColor + 'socket.on(playCard) from ' + player.username + ': ' + card + resetColor, {depth: null})
+  const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
+  const playOrderPosition = gameState.playOrder.indexOf(player.username); // get playOrder position
+  
+  // remove the card from the player's hand and place it on the trickCards array, at the position matching the one on playOrder
+  const cardIndex = player.hand.findIndex(handCard => handCard.rank === card.rank && handCard.suit === card.suit);
+  if (cardIndex !== -1) {
+    player.hand.splice(cardIndex, 1); // remove card from hand
+    gameState.trickCards[playOrderPosition] = card; // place card in trickCards
+  }
+  
+  // update players' actions
+  // if all cards are played (trickCards contains 3 cards), the player who wins the trick gets the grabTrick action and the others get 'waitForPlayer'
+  if (gameState.trickCards.filter(Boolean).length === gameState.players.length) {
+    // assuming you have a function to determine the winner, 'determineTrickWinner'
+    const winner = determineTrickWinner();
+    gameState.players.forEach(p => {
+      console.log(winner)
+      p.action = p.username === winner.username ? 'grabTrick' : 'waitForPlayer';
     });
+  } else {
+    // otherwise, the next player in the playOrder gets 'playCard' and the others should be at 'waitForPlayer'
+    const nextPlayerIndex = (playOrderPosition + 1) % gameState.players.length; // gets the index of the next player
+    const nextPlayer = gameState.players.find(player => player.username === gameState.playOrder[nextPlayerIndex]);
+    gameState.players.forEach(p => {
+      p.action = p.username === nextPlayer.username ? 'playCard' : 'waitForPlayer';
+    });
+  }
+  
+  // Update card movements
+  gameState.cardMovement = ['Play']
+  
+  // Then broadcast this updated game state to all clients.
+  sendUpdate();
+});
+
+function deleteGameStateFile() {
+  const gameStatePath = path.join(__dirname, 'gameState.json');
+  
+  fs.unlink(gameStatePath, (err) => {
+    if (err) {
+      console.error('Error deleting gameState file:', err);
+    } else {
+      console.log('GameState file deleted successfully.');
+    }
+  });
+}
+
+socket.on('grabTrick', () => {
+  const player = gameState.players.find(player => player.playerId === socket.id);
+  console.dir(blueColor + 'socket.on(grabTrick) by ' + player.username + resetColor, {depth: null})
+  const otherPlayers = gameState.players.filter(p => p.playerId !== socket.id);
+  
+  // Update the number of tricks done by this player
+  player.madeTricks[gameState.round-1] += 1;
+  console.log(player.username + ' now has ' + player.madeTricks[gameState.round-1] + ' tricks')
+  
+  // Save and Clear trickCards
+  gameState.lastTrick = gameState.trickCards;
+  gameState.trickCards = [];
+  
+  // Check if it's the last trick
+  const isLastTrick = player.hand.length === 0; // assuming that a round corresponds to a trick
+  console.log('This is the last trick of the round: ' + isLastTrick)
+  
+  // If it's not the last trick
+  if (!isLastTrick) {
+    // Set startingPlayer to the current player
+    gameState.startingPlayer = player.username;
+    
+    // Set the actions to waitForPlayer or playCard
+    player.action = 'playCard';
+    otherPlayers.forEach(p => p.action = 'waitForPlayer');
+  }
+  
+  // If it's the last trick
+  if (isLastTrick) {
+    // If it's not the last round
+    const isLastRound = gameState.round === 12; // assuming there are 12 rounds in a game
+    console.log('This is the last round: ' + isLastRound)
+    
+    // Update score
+    calculateAndStoreScore();
+    
+    if (!isLastRound) {
+      newRound();
+    } else {
+      // If it's the last round and last trick
+
+      // Update card movements
+      gameState.cardMovement = ['']
+      
+      saveScoreInDB(gameState)
+      .then(() => console.log("Scores saved successfully"))
+      .catch((error) => console.error("An error occurred:", error));
+      
+      // Delete the save file
+      deleteGameStateFile()
+      
+      // set all actions to startNewGame
+      gameState.players.forEach(p => p.action = 'startNewGame')
+      
+      // Calculate the highest score among all players
+      const highestScore = Math.max(...gameState.players.map(player => player.scores[gameState.round - 1]));
+      
+      // Identify all players with the highest score
+      const winners = gameState.players.filter(player => player.scores[gameState.round - 1] === highestScore);
+      
+      // Get the usernames of the winners
+      const winnerUsernames = winners.map(player => player.username);
+      
+      // Assign the array of winner usernames to the lastGameWinners attribute
+      gameState.lastGameWinners = winnerUsernames;
+    }
+  }
+  
+  // Then broadcast the updated game state to all clients.
+  sendUpdate();
+});
 });
 
 app.use('/', router);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
-

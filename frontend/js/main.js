@@ -323,6 +323,7 @@ function gameButtonFunction(onClickEvent) {
   }
 }
 
+
 const undoPhrases = [
   "Oups, fausse manœuvre !",
   "Retour en arrière ?",
@@ -449,7 +450,7 @@ let selectedTrump = null;
 function chooseTrump() {
   const chooseTrumpDiv = document.getElementById("choose-trump");
   const gameButton = document.getElementById("game-button");
-  
+
   // Display the div for choosing trump
   if (selectedTrump === null) {
     chooseTrumpDiv.style.display = "block";
@@ -1005,6 +1006,8 @@ function adjustCardSpacingForZone(zoneId) {
   const totalWidth = cardWidth + (cardElements.length - 1) * (cardWidth + desiredMarginRight)
   zoneCardsElement.style.width = `${totalWidth}px`;
   
+  // console.log(zoneId, ': zoneWidth: ', zoneWidth, ', estimated: ', estimatedMarginRight, ', desired: ', desiredMarginRight, ', totalWidth: ', totalWidth)
+
   // Update the margin-right for all cards in the zone
   cardElements.forEach(card => {
     card.style.marginRight = `${desiredMarginRight}px`;
@@ -1062,15 +1065,305 @@ function updatePlayerCards(player) {
   }
 }
 
-function updatePlayersCards(gameState) {
-  gameState.players.forEach((player) => {
-    if (player.hand) {
-      updatePlayerCards(player);
-    } else {
-      console.error(`No hand for player ${player.username}`);
+function updateTrickCards(gameState) {
+  let trickCardsDiv = document.getElementById("trick-cards");
+  trickCardsDiv.innerHTML = "";
+  if (gameState.trickCards && gameState.trickCards.length) {
+  
+    // Create ordered array of players
+    let orderedPlayers = [leftPlayer.username, mainPlayer.username, rightPlayer.username];
+  
+    // Create array of trick cards ordered by leftPlayer, mainPlayer, rightPlayer
+    let orderedTrickCards = orderedPlayers.map(player => {
+      let playerIndex = gameState.playOrder.indexOf(player);
+      return gameState.trickCards[playerIndex];
+    });
+  
+    // console.log(orderedTrickCards);
+  
+    orderedTrickCards.forEach((card, index) => {
+      let imgElement;
+      let rotation = 0; // Default rotation
+      let position = ''; // Default vertical position
+      let cardIdentifier = '';
+      if (card) {
+        cardIdentifier = `${card.suit}_${card.rank}`; // Unique identifier for the card
+      }
+      
+      if (index === 0) { // First card
+        rotation = 90;
+        // position = 'style="bottom: 20%;"';
+      } else if (index === 2) { // Last card
+        rotation = -90;
+        // position = 'style="bottom: 20%;"';
+      } else if (index === 1) { // Middle card
+        // position = 'style="bottom: 10%;"';
+      }
+
+      if (!cardRotations[cardIdentifier]) {
+        // Random rotation variation between -10 and 10 degrees
+        let randomRotation = Math.floor(Math.random() * 21) - 10;
+        rotation += randomRotation; // Adding random variation
+        cardRotations[cardIdentifier] = rotation;
+      } else {
+        rotation = cardRotations[cardIdentifier];
+      }
+  
+      if (card) {
+        let cardImageFilename = `res/${card.suit}_${card.rank}.svg`;
+        imgElement = `<img class="trick-card-img" src="${cardImageFilename}" alt="Card: ${card.rank} of ${card.suit}" style="transform: rotate(${rotation}deg);" />`;
+      } else {
+        imgElement = '<div class="trick-card-placeholder"></div>';
+      }
+  
+      let playerWhoPlayed = orderedPlayers[index];
+      if (playerWhoPlayed === 'mainPlayer') {
+        playerWhoPlayed += ' middle';
+      }
+  
+      let cardDiv = `<div class="trick-card ${playerWhoPlayed}" ${position}>${imgElement}</div>`;
+    
+      trickCardsDiv.innerHTML += cardDiv;
+    });
+  } else {
+    // no trick cards on the table
+    cardRotations = {}; // reinitialize cards rotations
+  }
+}
+
+let areCardsDealt = new Array(12).fill(false);
+
+function updateCards(gameState) {
+  updateTrickCards(gameState);
+
+  // console.log(gameState.cardMovement[0])
+  if ((gameState.cardMovement[0] === 'Deal') && (areCardsDealt[gameState.round-1] !== true)) {
+    // Hide the button
+    const gameButton = document.getElementById("game-button");
+    gameButton.style.display = "none";
+    // Animate card dealing and return the promise
+    return dealCardsAnimation(gameState).then(() => {
+      areCardsDealt[gameState.round-1] = true;
+    });
+  } else {
+    // Update deck normally
+    updateDeck(gameState.deck);
+
+    gameState.players.forEach((player) => {
+      if (player.hand) {
+        updatePlayerCards(player);
+      } else {
+        console.error(`No hand for player ${player.username}`);
+      }
+    });
+    adjustCardSpacingForBothZones();
+
+    // Return a resolved promise for consistency
+    return Promise.resolve();
+  }
+}
+
+function getPlayerPosition(playerUsername) {
+  if (playerUsername === leftPlayer.username) {
+    return "1"; // left player
+  } else if (playerUsername === rightPlayer.username) {
+    return "2"; // right player
+  } else if (playerUsername === username) { // use username for bottom player
+    return "3"; // bottom player
+  } else {
+    console.error(`Invalid player: ${playerUsername}`);
+    return;
+  }
+}
+
+function insertPlaceholderCards(gameState) {
+  gameState.players.forEach(player => {
+    let position = getPlayerPosition(player.username); // getPlayerPosition should return 'player1', 'player2', or 'player3'
+    const playerCardsDiv = document.getElementById(`player${position}-cards`);
+    const zoneElement = document.getElementById(`player${position}-zone`);
+
+    if (playerCardsDiv && zoneElement) {
+      playerCardsDiv.innerHTML = ""; // Clear existing cards
+
+      let cardWidth = position === "3" ? 98.375 : 70.265625;
+      let cardHeight = position === "3" ? 140 : 100;
+      let desiredMarginRight = position === "3" ? -70 : -50;
+      let zoneWidth = zoneElement.offsetWidth - (position === "3" ? 100 : 20);
+
+      const estimatedMarginRight = (zoneWidth - cardWidth) / (player.hand.length - 1) - cardWidth;
+      if (estimatedMarginRight < desiredMarginRight) {
+        desiredMarginRight = estimatedMarginRight;
+      }
+
+      // Set the width of the playerCardsDiv
+      const totalWidth = cardWidth + (player.hand.length - 1) * (cardWidth + desiredMarginRight);
+      playerCardsDiv.style.width = `${totalWidth}px`;
+      
+      // console.log(position, ': zoneWidth: ', zoneWidth, ', estimated: ', estimatedMarginRight, ', desired: ', desiredMarginRight, ', totalWidth: ', totalWidth)
+
+      for (let i = 0; i < player.hand.length; i++) {
+        const placeholderCard = document.createElement("img");
+        placeholderCard.src = "res/transparent_picture.png"; // Path to your transparent image
+        placeholderCard.classList.add("card", "placeholder");
+
+        placeholderCard.style.width = `${cardWidth}px`;
+        placeholderCard.style.height = `${cardHeight}px`;
+        placeholderCard.style.marginRight = `${desiredMarginRight}px`;
+
+        playerCardsDiv.appendChild(placeholderCard);
+      }
     }
   });
-  adjustCardSpacingForBothZones();
+}
+
+function getOffset( el ) {
+  var _x = 0;
+  var _y = 0;
+  while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+      _x += el.offsetLeft - el.scrollLeft;
+      _y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+  }
+  return { top: _y, left: _x };
+}
+
+function dealCardsAnimation(gameState) {
+  return new Promise((resolve, reject) => {
+    // fill the deck with 32 cards
+    updateDeck(32);
+
+    insertPlaceholderCards(gameState); // to fill the space
+
+    let totalCardsToDeal = gameState.players.reduce((total, player) => total + player.hand.length, 0);
+
+    let cardsDealt = gameState.players.map(player => ({ username: player.username, dealt: 0 }));
+    let zIndexCounter = 0; // Start with a high z-index value
+    
+    // Precompute all animation data
+    let animations = [];
+    for (let dealIndex = 0; dealIndex < totalCardsToDeal; dealIndex++) {
+      let playerIndex = dealIndex % gameState.players.length;
+      let player = gameState.players[playerIndex];
+      let dealtInfo = cardsDealt.find(p => p.username === player.username);
+
+      let position = getPlayerPosition(player.username);
+
+      if (dealtInfo.dealt < player.hand.length) {
+        const cardElement = document.getElementById(`deck-card-${32-dealIndex}`);
+        if (!cardElement) {
+          console.error("No more cards in the deck to animate.");
+          break;
+        }
+
+        // Get destination coordinates from the corresponding placeholder card
+        const playerHandDiv = document.getElementById(`player${position}-cards`);
+        const placeholderCard = playerHandDiv.getElementsByClassName("placeholder")[dealtInfo.dealt];
+        if (placeholderCard) {
+          let cardCoord = getOffset(cardElement)
+          let placeholderCoord = getOffset(placeholderCard)
+          let moveToX = placeholderCoord.left - cardCoord.left //- (position === "3" ? 23 : 37.5)
+          let moveToY = (placeholderCoord.top - cardCoord.top) + (position === "3" ? 20 : 0)
+          
+          animations.push({
+            cardElement: cardElement,
+            moveToX: moveToX,
+            moveToY: moveToY,
+            scale: position === "3" ? 1.4 : 1,
+            playerPosition: position,
+            zIndex: zIndexCounter
+          });
+
+          zIndexCounter++;
+        }
+
+        dealtInfo.dealt++;
+      }
+    }
+
+    function animateDeal(index) {
+      return new Promise((resolve, reject) => {
+        if (index >= animations.length) {
+          resolve(); // Resolve the promise when no more animations are left
+          return;
+        }
+
+        const animation = animations[index];
+        animateCardMove(animation.cardElement, 0, 0, animation.moveToX, animation.moveToY, 1, animation.scale);
+
+        function handleTransitionEnd() {
+          // console.log('Transition end triggered!')
+          animation.cardElement.removeEventListener('transitionend', handleTransitionEnd);
+        }
+
+        animation.cardElement.addEventListener('transitionend', handleTransitionEnd);
+
+        // Set a timeout to start the next card's animation after 200ms
+        setTimeout(() => {
+          animateDeal(index + 1).then(resolve);
+        }, 100);
+      });
+    }
+
+    // Start the animation sequence and wait for it to complete
+    animateDeal(0).then(() => {
+      // Add a delay before resolving the promise
+      setTimeout(() => {
+        // Code to execute after all animations are complete
+        updateDeck(gameState.deck);
+        gameState.players.forEach(player => updatePlayerCards(player));
+        adjustCardSpacingForBothZones();
+        resolve(); // Resolve the outer promise after the delay
+      }, 1000); 
+    });
+  });
+}
+
+function animateCardMove(cardElement, startX, startY, endX, endY, startScale, endScale) {
+  let duration = .5; // Duration of the animation
+  // Set starting state
+  cardElement.style.transform = `translate3d(${startX}px, ${startY}px, 0) scale(${startScale})`;
+
+  // Wait for a very short time before starting the animation
+  setTimeout(() => {
+    // Apply end state within the timeout
+    cardElement.style.transition = `transform ${duration}s ease-out`; // Set the transition
+    cardElement.style.transform = `translate3d(${endX}px, ${endY}px, 0) scale(${endScale})`;
+  }, 20); // 20 milliseconds delay
+}
+
+function getPlayerHandPosition(username) {
+  let cardWidth = 70; // Adjust as per actual card width
+  let cardHeight = 100; // Adjust as per actual card height
+
+  let elementId = '';
+  if (username === leftPlayer.username) {
+    elementId = 'player1-cards'; // left player
+  } else if (username === rightPlayer.username) {
+    elementId = 'player2-cards'; // right player
+  } else if (username === username) {
+    elementId = 'player3-cards'; // bottom player
+    cardWidth = 98.38; // Adjust as per actual card width
+    cardHeight = 140; // Adjust as per actual card height
+  } else {
+    console.error(`Invalid username: ${username}`);
+    return { x: 0, y: 0 };
+  }
+
+  const cardsDiv = document.getElementById(elementId);
+  if (cardsDiv) {
+    const rect = cardsDiv.getBoundingClientRect();
+    // console.log('rect', rect);
+    // console.log('Position - X:', rect.left + window.scrollX, 'Y:', rect.top + window.scrollY);
+    return {
+      // x: rect.left + window.scrollX - cardWidth / 2,
+      // y: rect.top + window.scrollY - cardHeight / 2
+      x: rect.left,
+      y: rect.top
+    };
+  } else {
+    console.error(`Element not found for ID: ${elementId}`);
+    return { x: 0, y: 0 };
+  }
 }
 
 function getColorCode(misesScore, roundNumber) {
@@ -1120,6 +1413,7 @@ function updateDeck(numberOfCards) {
       const cardBack = document.createElement('div');
       cardBack.className = 'card-back';
       cardBack.style.zIndex = i + 1; // Stack cards in order
+      cardBack.id = `deck-card-${i+1}`;
       deckContainer.appendChild(cardBack);
 
       // Add dynamic rule for each card
@@ -1226,73 +1520,6 @@ function updateScoreZone(gameState) {
     
     // Update the div's contents with an img tag referencing the trumpCard's image
     trumpCardDiv.innerHTML = `<img class="trump-card-img" src="${img}" alt="Trump card: ${gameState.trumpCard.rank} of ${gameState.trumpCard.suit}" />`;
-    
-    updateDeck(gameState.deck);
-  }
-
-  
-  let trickCardsDiv = document.getElementById("trick-cards");
-  trickCardsDiv.innerHTML = "";
-  if (gameState.trickCards && gameState.trickCards.length) {
-  
-    // Create ordered array of players
-    let orderedPlayers = [leftPlayer.username, mainPlayer.username, rightPlayer.username];
-  
-    // Create array of trick cards ordered by leftPlayer, mainPlayer, rightPlayer
-    let orderedTrickCards = orderedPlayers.map(player => {
-      let playerIndex = gameState.playOrder.indexOf(player);
-      return gameState.trickCards[playerIndex];
-    });
-  
-    // console.log(orderedTrickCards);
-  
-    orderedTrickCards.forEach((card, index) => {
-      let imgElement;
-      let rotation = 0; // Default rotation
-      let position = ''; // Default vertical position
-      let cardIdentifier = '';
-      if (card) {
-        cardIdentifier = `${card.suit}_${card.rank}`; // Unique identifier for the card
-      }
-      
-      if (index === 0) { // First card
-        rotation = 90;
-        // position = 'style="bottom: 20%;"';
-      } else if (index === 2) { // Last card
-        rotation = -90;
-        // position = 'style="bottom: 20%;"';
-      } else if (index === 1) { // Middle card
-        // position = 'style="bottom: 10%;"';
-      }
-      console.log(cardRotations)
-      if (!cardRotations[cardIdentifier]) {
-        // Random rotation variation between -10 and 10 degrees
-        let randomRotation = Math.floor(Math.random() * 21) - 10;
-        rotation += randomRotation; // Adding random variation
-        cardRotations[cardIdentifier] = rotation;
-      } else {
-        rotation = cardRotations[cardIdentifier];
-      }
-  
-      if (card) {
-        let cardImageFilename = `res/${card.suit}_${card.rank}.svg`;
-        imgElement = `<img class="trick-card-img" src="${cardImageFilename}" alt="Card: ${card.rank} of ${card.suit}" style="transform: rotate(${rotation}deg);" />`;
-      } else {
-        imgElement = '<div class="trick-card-placeholder"></div>';
-      }
-  
-      let playerWhoPlayed = orderedPlayers[index];
-      if (playerWhoPlayed === 'mainPlayer') {
-        playerWhoPlayed += ' middle';
-      }
-  
-      let cardDiv = `<div class="trick-card ${playerWhoPlayed}" ${position}>${imgElement}</div>`;
-    
-      trickCardsDiv.innerHTML += cardDiv;
-    });
-  } else {
-    // no trick cards on the table
-    cardRotations = {}; // reinitialize cards rotations
   }
 }
 
@@ -1310,22 +1537,18 @@ function isPlayerActionSameAsBefore(gameState) {
   return mainPlayer.action === previousAction
 }
 
-function updateGameUI(gameState) {
+socket.on('updateGameState', async (updatedGameState) => {
+  gameState = updatedGameState;
+  
   updatePictures(gameState);
+  await updateCards(gameState); // Wait for the card dealing to complete
+  updateScoreZone(gameState);
 
   if (!isPlayerActionSameAsBefore(gameState)) {
     updateButtons(gameState);
   }
 
-  updatePlayersCards(gameState);
-  updateScoreZone(gameState);
-}
-
-// Listen for gameStateUpdate events
-socket.on('updateGameState', (updatedGameState) => {
-  gameState = updatedGameState;
-  updateGameUI(gameState);
-  takeAction(gameState);
+  takeAction(gameState); // Now this will be called after card dealing
   previousGameState = gameState;
 });
 
