@@ -6,7 +6,7 @@ if (!username) {
   window.location.href = '/index.html'; 
 }
 let leftPlayer, rightPlayer, mainPlayer;
-let previousGameState;
+let previousGameState = 'init';
 function setPlayerPositions(gameState) {
   const currentIndex = gameState.playOrder.indexOf(username);
 
@@ -470,6 +470,19 @@ let selectedTrump = null;
 function chooseTrump() {
   const chooseTrumpDiv = document.getElementById("choose-trump");
   const gameButton = document.getElementById("game-button");
+  const player = gameState.players.find(player => player.username === username);
+
+  // Function to update the display of the cards based on the selected trump suit
+  function updateCardDisplay(chosenSuit) {
+    player.hand.forEach((card) => {
+      const cardElement = document.querySelector(`.card[data-suit="${card.suit}"][data-rank="${card.rank}"]`);
+      if (card.suit !== chosenSuit) {
+        cardElement.classList.add('greyed-out');
+      } else {
+        cardElement.classList.remove('greyed-out');
+      }
+    });
+  }
 
   // Display the div for choosing trump
   if (selectedTrump === null) {
@@ -504,6 +517,9 @@ function chooseTrump() {
       // Store in case of refresh
       selectedTrump = i
 
+      // Update the card display based on the chosen suit
+      updateCardDisplay(chosenSuit);
+
       // Remove the 'selected' class from all options
       for (let j = 0; j < trumpOptions.length; j++) {
         trumpOptions[j].classList.remove('selected');
@@ -527,6 +543,11 @@ function chooseTrump() {
       gameButton.textContent = "Atout choisi";
       gameButton.style.display = "none";
       gameButton.disabled = true;
+
+      // Remove the grey-out effect from all cards
+      document.querySelectorAll('.card').forEach((cardElement) => {
+        cardElement.classList.remove('greyed-out');
+      });
 
       // Remove the event listener to prevent multiple listeners on the button
       const clickEvent = arguments.callee;
@@ -875,28 +896,63 @@ function betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBe
 }
 
 function updatePictures(gameState) {
-  // Map of usernames to image names
-  const playerImages = {
-    "gg": "res/jerome.jpeg",
-    "dd": "res/audrey.jpeg",
-    "toto": "res/tony.jpeg"
-  };
 
-  // Get the player image and bet/trick and actions elements
+  // set players variables
+  setPlayerPositions(gameState)
+
+  // set the player's pictures
+  if (previousGameState === 'init') {
+    // Map of usernames to image names
+    const playerImages = {
+      "gg": "res/jerome.jpeg",
+      "dd": "res/audrey.jpeg",
+      "toto": "res/tony.jpeg"
+    };
+
+    // Get the player image
+    const leftPlayerImage = document.getElementById("player1-image");
+    const rightPlayerImage = document.getElementById("player2-image");
+    const mainPlayerImage = document.getElementById("player3-image");
+    
+    // Set the images based on the current players
+    mainPlayerImage.src = playerImages[username] || "res/black_image.jpeg";
+    leftPlayerImage.src = playerImages[leftPlayer.username] || "res/black_image.jpeg";
+    rightPlayerImage.src = playerImages[rightPlayer.username] || "res/black_image.jpeg";
+  }
+  
+  /*
+  TODO: Conditions pour placer ou retirer l'image de départ
+  */
+  // Get the player image
   const leftPlayerImage = document.getElementById("player1-image");
-  const leftPlayerBet = document.getElementById("player1-bet");
-
   const rightPlayerImage = document.getElementById("player2-image");
-  const rightPlayerBet = document.getElementById("player2-bet");
-
   const mainPlayerImage = document.getElementById("player3-image");
-  const mainPlayerBet = document.getElementById("player3-bet");
+    
+  // Remove existing glow from all player images
+  leftPlayerImage.classList.remove('glow');
+  rightPlayerImage.classList.remove('glow');
+  mainPlayerImage.classList.remove('glow');
 
+  if (gameState.lastTrick.length === 0) {
+    console.log('gameState.lastTrick.length: ', gameState.lastTrick.length)
+    // Determine first player
+    const firstPlayerUsername = gameState.startingPlayer;
+    
+    // Determine the first player and apply the glow
+    if (firstPlayerUsername === username) {
+      mainPlayerImage.classList.add('glow');
+    } else if (firstPlayerUsername === leftPlayer.username) {
+      leftPlayerImage.classList.add('glow');
+    } else if (firstPlayerUsername === rightPlayer.username) {
+      rightPlayerImage.classList.add('glow');
+    }
+  }
+
+  // Update the actions texts
   const leftPlayerAction = document.getElementById("player1-action");
   const rightPlayerAction = document.getElementById("player2-action");
+  
 
-  // Update the actions
-  setPlayerPositions(gameState)
   if (leftPlayer.action && leftPlayer.action.trim() !== '') {
     const actionText = textAction(leftPlayer.action);
     leftPlayerAction.innerHTML = `${actionText} <span class='ellipsis'>.<span>.<span>.</span></span></span>`;
@@ -911,12 +967,12 @@ function updatePictures(gameState) {
     rightPlayerAction.textContent = '';
   }
   
-// Set the images based on the current players
-  mainPlayerImage.src = playerImages[username] || "res/black_image.jpeg";
-  leftPlayerImage.src = playerImages[leftPlayer.username] || "res/black_image.jpeg";
-  rightPlayerImage.src = playerImages[rightPlayer.username] || "res/black_image.jpeg";
-  
+
   // Set the bets and tricks
+  const leftPlayerBet = document.getElementById("player1-bet");
+  const rightPlayerBet = document.getElementById("player2-bet");
+  const mainPlayerBet = document.getElementById("player3-bet");
+
   totalTricks = Math.max(1, gameState.round-2);
   const totalTricksToBeMade = totalTricks - (mainPlayer.madeTricks[gameState.round-1] + leftPlayer.madeTricks[gameState.round-1] + rightPlayer.madeTricks[gameState.round-1]);
   let madeTricks = mainPlayer.madeTricks[gameState.round-1];
@@ -924,55 +980,32 @@ function updatePictures(gameState) {
   let madeTricksDisplay = madeTricks !== undefined ? madeTricks : '?';
   let announcedTricksDisplay = announcedTricks !== undefined ? announcedTricks : '?';
   mainPlayerBet.style.color = betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade);
-  mainPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
+  if (gameState.trickCards.length === 0 && gameState.lastTrick.length === 0) {
+    mainPlayerBet.textContent = `  ${announcedTricksDisplay}`;
+  } else {
+    mainPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
+  }
 
   madeTricks = leftPlayer.madeTricks[gameState.round-1];
   announcedTricks = leftPlayer.announcedTricks[gameState.round-1];
   madeTricksDisplay = madeTricks !== undefined ? madeTricks : '?';
   announcedTricksDisplay = announcedTricks !== undefined ? announcedTricks : '?';
   leftPlayerBet.style.color = betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade);
-  leftPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
+  if (gameState.trickCards.length === 0 && gameState.lastTrick.length === 0) {
+    leftPlayerBet.textContent = `  ${announcedTricksDisplay}`;
+  } else {
+    leftPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
+  }
 
   madeTricks = rightPlayer.madeTricks[gameState.round-1];
   announcedTricks = rightPlayer.announcedTricks[gameState.round-1];
   madeTricksDisplay = madeTricks !== undefined ? madeTricks : '?';
   announcedTricksDisplay = announcedTricks !== undefined ? announcedTricks : '?';
   rightPlayerBet.style.color = betTextColor(madeTricksDisplay, announcedTricksDisplay, totalTricksToBeMade);
-  rightPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
-  
-  // Check if there's already a starting image and remove it
-  const oldStartingImage = document.getElementById("starting-image");
-  if (oldStartingImage) oldStartingImage.remove();
-
-  // Determine first player
-  const firstPlayerUsername = gameState.startingPlayer;
-  
-  // Set starting image for the player who starts the round
-  let firstPlayerImage;
-  if (firstPlayerUsername === username) {
-    firstPlayerImage = mainPlayerImage;
-  } else if (firstPlayerUsername === leftPlayer.username) {
-    firstPlayerImage = leftPlayerImage;
-  } else if (firstPlayerUsername === rightPlayer.username) {
-    firstPlayerImage = rightPlayerImage;
-  }
-  
-  // Add starting image if the player is determined
-  if (firstPlayerImage && gameState.lastTrick.length === 0) {
-    const img = document.createElement("img");
-    img.id = "starting-image"; // Add an id
-    img.src = "res/first_to_start.png";
-    img.style.position = "absolute";
-    img.style.top = "0";
-    img.style.right = "0";
-    img.style.height = "20px";
-    img.style.width = "20px";
-    img.style.transform = 'rotate(45deg)';
-    firstPlayerImage.parentElement.style.position = "relative"; // Set the parent's position to relative
-    if (firstPlayerUsername == username){
-      firstPlayerImage.parentElement.style.position = "absolute"; // Set the parent's position to absolute for the main player
-    }
-    firstPlayerImage.parentElement.appendChild(img);
+  if (gameState.trickCards.length === 0 && gameState.lastTrick.length === 0) {
+    rightPlayerBet.textContent = `  ${announcedTricksDisplay}`;
+  } else {
+    rightPlayerBet.textContent = `${madeTricksDisplay} / ${announcedTricksDisplay}`;
   }
 
   if (mainPlayer.action === 'startNewGame' && gameState.lastGameWinners.length > 0) {
@@ -1151,21 +1184,24 @@ function updateTrickCards(gameState) {
   }
 }
 
-let areCardsDealt = new Array(12).fill(false);
+let areCardsDealt = false;
 
 function updateCards(gameState) {
   updateTrickCards(gameState);
 
-  // console.log(gameState.cardMovement[0])
-  if ((gameState.cardMovement[0] === 'Deal') && (areCardsDealt[gameState.round-1] !== true)) {
+  // Deal the cards
+  if ((gameState.cardMovement[0] === 'Deal') && (!areCardsDealt)) {
     // Hide the button
     const gameButton = document.getElementById("game-button");
     gameButton.style.display = "none";
     // Animate card dealing and return the promise
     return dealCardsAnimation(gameState).then(() => {
-      areCardsDealt[gameState.round-1] = true;
+      areCardsDealt = true;
     });
   } else {
+    if (gameState.cardMovement[0] !== 'Deal') {
+      areCardsDealt = false;
+    }
     // Update deck normally
     updateDeck(gameState.deck);
 

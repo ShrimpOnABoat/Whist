@@ -2,6 +2,7 @@ require('dotenv').config();
 //console.log(process.env.SESSION_SECRET);
 // const { connect: connectDB } = require("./whist-backend/config/db");
 const getParams = require('./mongoDB.js');
+const moment = require('moment-timezone');
 const express = require("express");
 const session = require('express-session');
 const cors = require("cors");
@@ -77,7 +78,7 @@ async function saveScoreInDB() {
   try {
     // Prepare the game data
     const gameData = {
-      date: new Date(),
+      date: moment().tz("America/Montreal").format(),
       gg_score: gameState.players.find(player => player.username === 'gg').scores.slice(-1)[0],
       dd_score: gameState.players.find(player => player.username === 'dd').scores.slice(-1)[0],
       toto_score: gameState.players.find(player => player.username === 'toto').scores.slice(-1)[0]
