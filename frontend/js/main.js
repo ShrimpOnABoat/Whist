@@ -920,9 +920,6 @@ function updatePictures(gameState) {
     rightPlayerImage.src = playerImages[rightPlayer.username] || "res/black_image.jpeg";
   }
   
-  /*
-  TODO: Conditions pour placer ou retirer l'image de départ
-  */
   // Get the player image
   const leftPlayerImage = document.getElementById("player1-image");
   const rightPlayerImage = document.getElementById("player2-image");
@@ -1485,8 +1482,6 @@ function updateDeck(numberOfCards) {
 let cardRotations = {}; // Object to store card rotations
 
 function updateScoreZone(gameState) {
-  // Assuming the gameState object has a 'round' property and a 'players' array
-  // And each player object has a 'username' property and a 'scores' array
 
   // Update round number
   const roundNumber = gameState.round;

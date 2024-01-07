@@ -83,9 +83,12 @@ async function saveScoreInDB() {
       dd_score: gameState.players.find(player => player.username === 'dd').scores.slice(-1)[0],
       toto_score: gameState.players.find(player => player.username === 'toto').scores.slice(-1)[0]
     };
+    console.log('Saving file: ', gameData)
 
     // Get the current year
-    const currentYear = gameData.date.getFullYear();
+    // const currentYear = gameData.date.getFullYear();
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
 
     // Define the path to the JSON file
     const filePath = path.join(__dirname, `scores/scores_${currentYear}.json`);
@@ -328,6 +331,14 @@ function shuffleOrder(array) {
     return array;
 }
 
+function lastPlayerNotDiscarding() {
+  // Find the player who is currently in the last position
+  const lastPositionPlayer = gameState.players.find(player => getPosition(player.username) === 3);
+
+  // Check if the player's action is not 'discard'
+  return lastPositionPlayer && lastPositionPlayer.action !== 'discard';
+}
+
 function createPublicGameState(username) {
     // Create a deep copy of the gameState
     let publicGameState = JSON.parse(JSON.stringify(gameState));
@@ -346,11 +357,12 @@ function createPublicGameState(username) {
             if (player.username !== username) {
                 player.hand = player.hand.map(() => ({ suit: null, value: null }));
             }
-            // Can players see the trump card
+            // Can players see the trump card?
             // if monthlyLosses > 2 or position is 2 or 3, and not everyone is first, yes 
             // also if we're already playing
+            // also if third player is discarding
             const anyPlayerPlaying = gameState.players.some(player => player.action === 'playCard' || player.action === 'grabTrick');
-            if (getPosition(username) === 1 && player.monthlyLosses < 3 && !allScoresEqual() && !anyPlayerPlaying) {
+            if (getPosition(username) === 1 && player.monthlyLosses < 3 && !allScoresEqual() && !anyPlayerPlaying && lastPlayerNotDiscarding()) {
                 publicGameState.trumpCard = { suit: null, value: null };
             }
             // can players see the others bets
@@ -533,7 +545,7 @@ function dealCards() {
         if (gameState.deck.length > 0) {
           gameState.players[i].hand.push(gameState.deck.pop());
           let lastCard = gameState.players[i].hand[gameState.players[i].hand.length - 1];
-          console.log(gameState.players[i].username + ' receives ' + lastCard.rank + ' of ' + lastCard.suit);
+          // console.log(gameState.players[i].username + ' receives ' + lastCard.rank + ' of ' + lastCard.suit);
         }
       }
     }
@@ -588,61 +600,61 @@ function loadGameStateFromFile() {
 }
 
 function getPosition(username) {
-    const player = gameState.players.find((p) => p.username === username);
-  
-    // Step 1: Check if player's score is the highest
-    const highestScore = Math.max(...gameState.players.map((p) => p.scores[p.scores.length - 1]));
-    if (player.scores[player.scores.length - 1] === highestScore) {
-      return 1;
-    }
-  
-    // Step 2: Check if player's score is lower than the first but higher than the last
-    const lowestScore = Math.min(...gameState.players.map((p) => p.scores[p.scores.length - 1]));
-    if (player.scores[player.scores.length - 1] === lowestScore) {
-      // Check if there is a tie between the two lowest scores
-      const sortedScores = [...gameState.players].sort((a, b) => a.scores[a.scores.length - 1] - b.scores[b.scores.length - 1]);
-      const secondLowest = sortedScores[1].scores[sortedScores[1].scores.length - 1];
-    
-      if (player.scores[player.scores.length - 1] === secondLowest) {
-        // Create an array of the two players who have the lowest score
-        const playersWithLowestScore = sortedScores.slice(0, 2);
-        
-        // Find the player with the lowest score on the previous round
-        let previousRound = gameState.round - 1;
-        while (previousRound >= 0) {
-          const previousRoundScores = playersWithLowestScore.map((p) => p.scores[previousRound]);
-          const lowestPreviousRoundScore = Math.min(...previousRoundScores);
-    
-          if (lowestPreviousRoundScore !== secondLowest) {
-            const indexOfPlayerWithLowestScore = previousRoundScores.indexOf(lowestPreviousRoundScore);
-            if (indexOfPlayerWithLowestScore > -1) { // Add this check
-                if (playersWithLowestScore[indexOfPlayerWithLowestScore].username === username) {
-                    return 3;
-                } else {
-                    return 2;
-                }
-            }
-        }
-            
-          previousRound--;
-        }
-    
-        // If players always had the same score, apply startingPlayer rule
-        const startingPlayerIndex = gameState.playOrder.indexOf(gameState.startingPlayer);
-        const nextPlayerIndex = (startingPlayerIndex + 1) % gameState.playOrder.length;
-        if (nextPlayerIndex === sortedScores[1].playerId || nextPlayerIndex === sortedScores[2].playerId) {
-          return 3;
-        } else {
-          return 2;
-        }
-      } else {
-        return 3; // Only one player with the lowest score
-      }
-    }
-  
-    // Step 4: Player's score is between the highest and the lowest
-    return 2;
+  const player = gameState.players.find((p) => p.username === username);
+
+  // Step 1: Check if player's score is the highest
+  const highestScore = Math.max(...gameState.players.map((p) => p.scores[p.scores.length - 1]));
+  if (player.scores[player.scores.length - 1] === highestScore) {
+    return 1;
   }
+
+  // Step 2: Check if player's score is lower than the first but higher than the last
+  const lowestScore = Math.min(...gameState.players.map((p) => p.scores[p.scores.length - 1]));
+  if (player.scores[player.scores.length - 1] === lowestScore) {
+    // Check if there is a tie between the two lowest scores
+    const sortedScores = [...gameState.players].sort((a, b) => a.scores[a.scores.length - 1] - b.scores[b.scores.length - 1]);
+    const secondLowest = sortedScores[1].scores[sortedScores[1].scores.length - 1];
+  
+    if (player.scores[player.scores.length - 1] === secondLowest) {
+      // Create an array of the two players who have the lowest score
+      const playersWithLowestScore = sortedScores.slice(0, 2);
+      
+      // Find the player with the lowest score on the previous round
+      let previousRound = gameState.round - 1;
+      while (previousRound >= 0) {
+        const previousRoundScores = playersWithLowestScore.map((p) => p.scores[previousRound]);
+        const lowestPreviousRoundScore = Math.min(...previousRoundScores);
+  
+        if (lowestPreviousRoundScore !== secondLowest) {
+          const indexOfPlayerWithLowestScore = previousRoundScores.indexOf(lowestPreviousRoundScore);
+          if (indexOfPlayerWithLowestScore > -1) { // Add this check
+              if (playersWithLowestScore[indexOfPlayerWithLowestScore].username === username) {
+                  return 3;
+              } else {
+                  return 2;
+              }
+          }
+      }
+          
+        previousRound--;
+      }
+  
+      // If players always had the same score, apply startingPlayer rule
+      const startingPlayerIndex = gameState.playOrder.indexOf(gameState.startingPlayer);
+      const nextPlayerIndex = (startingPlayerIndex + 1) % gameState.playOrder.length;
+      if (nextPlayerIndex === sortedScores[1].playerId || nextPlayerIndex === sortedScores[2].playerId) {
+        return 3;
+      } else {
+        return 2;
+      }
+    } else {
+      return 3; // Only one player with the lowest score
+    }
+  }
+
+  // Step 4: Player's score is between the highest and the lowest
+  return 2;
+}
       
 function newRound() {
     // Determine first player
