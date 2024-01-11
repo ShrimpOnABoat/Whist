@@ -86,23 +86,33 @@ function updateSummaryTable(data) {
 
 function updateMonthlyScores(data) {
     const monthlyScores = document.getElementById('monthlyScores');
-    
+  
     // Create table header
     let tableHTML = `<table class="monthly-scores-table"><tr><th>Date</th><th>GG</th><th>DD</th><th>Toto</th></tr>`;
-    
+  
     // Process data to build rows for each game
     data.forEach(game => {
-      const gameDate = new Date(game.date).toISOString().slice(0, 10); // Extract YYYY-MM-DD
-      tableHTML += `<tr><td>${gameDate}</td><td>${game.gg_score}</td><td>${game.dd_score}</td><td>${game.toto_score}</td></tr>`;
+      const gameDate = game.date.split('T')[0]; // Extract YYYY-MM-DD
+      // Determine the highest score for highlighting
+      const scores = [game.gg_score, game.dd_score, game.toto_score];
+      const maxScore = Math.max(...scores);
+  
+      tableHTML += `<tr>
+                      <td>${gameDate}</td>
+                      <td class="${game.gg_score === maxScore ? 'highlight-score' : ''}">${game.gg_score}</td>
+                      <td class="${game.dd_score === maxScore ? 'highlight-score' : ''}">${game.dd_score}</td>
+                      <td class="${game.toto_score === maxScore ? 'highlight-score' : ''}">${game.toto_score}</td>
+                    </tr>`;
     });
   
     // Close the table tag
     tableHTML += '</table>';
-    
+  
     // Update the monthlyScores with the new content
     monthlyScores.innerHTML = tableHTML;
   }
   
+    
 
 document.getElementById('backButton').addEventListener('click', () => {
     window.location.href = "/game.html";
