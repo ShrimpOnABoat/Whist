@@ -87,3 +87,66 @@
 .monthly-scores-table tr {
   transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
+
+h2 {
+  text-align: center; /* Center the text */
+  color: #ffffff; /* Change the text color for visibility, adjust as needed */
+  background-color: rgba(0, 0, 0, 0.6); /* Optional: Add a semi-transparent background */
+  padding: 10px; /* Add some padding for better spacing */
+  margin-top: 20px; /* Add margin on the top for spacing */
+  margin-bottom: 20px; /* Add margin on the bottom for spacing */
+  border-radius: 5px; /* Optional: Round the corners if you've added a background */
+  width: fit-content; /* Adjust the width to fit the content */
+  margin-left: auto; /* These two lines center the block itself if it's not full width */
+  margin-right: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for depth */
+}
+
+#header {
+  display: block;
+  padding: 10px; /* Add some padding for spacing */
+  color: white; /* Light text for contrast */
+  border-radius: 5px; /* Rounded corners */
+  margin-bottom: 20px; /* Space below the header */
+}
+
+#backButtonContainer {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+#header button {
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Vertical and horizontal padding */
+  text-align: center; /* Center text within the button */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Align with other inline elements */
+  font-size: 16px; /* Increase font size */
+  margin: 4px 2px; /* Margin around buttons */
+  cursor: pointer; /* Cursor indicates button */
+  border-radius: 4px; /* Rounded corners for buttons */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#header button:hover {
+  background-color: #45a049; /* Darker shade on hover */
+}
+
+.center-container {
+  text-align: center;
+}
+
+#yearSelector {
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  padding: 10px; /* Add padding */
+  border-radius: 5px; /* Rounded corners */
+  font-weight: bold; /* Make text bold */
+  font-size: larger;
+  display: inline-block; /* Use flexbox for internal layout */
+  text-align: center;
+  margin: 0 auto;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Align items vertically */
+}
