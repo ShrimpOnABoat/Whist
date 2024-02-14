@@ -79,7 +79,13 @@
 
 /* Highlighting the highest score */
 .highlight-score {
-  background-color: #ffd700; /* Gold color for highest scores */
+  background-color: gold; /* Gold color for highest scores */
+  font-weight: bold;
+}
+
+/* Highlighting the highest score */
+.second-score {
+  background-color: silver; /* Silver color for highest scores */
   font-weight: bold;
 }
 
