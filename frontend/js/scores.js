@@ -104,57 +104,6 @@ function updateSummaryTable(data) {
     summaryTable.innerHTML = header + rows.join('') + footer;
 }
 
-// function updateSummaryTable(data) {
-//     // Group data by month directly from the date string
-//     const monthlyData = data.reduce((acc, game) => {
-//         // Directly extract YYYY-MM from the date string
-//         const month = game.date.substring(0, 7); // Extract YYYY-MM directly
-
-//         acc[month] = acc[month] || [];
-//         acc[month].push(game);
-//         return acc;
-//     }, {});
-
-//     // Define function to calculate points
-//     const calculatePoints = scores => {
-//         const sorted = [...scores].sort((a, b) => b - a);
-//         return scores.map(score => {
-//             if (score === sorted[0]) return 2; // 2 points for the highest score
-//             if (score === sorted[1]) return 1; // 1 point for the second highest score
-//             return 0; // 0 points otherwise
-//         });
-//     };
-
-//     // Process data for summary table
-//     let totalScores = [0, 0, 0, 0, 0, 0];
-//     const rows = Object.keys(monthlyData).map(month => {
-//         const games = monthlyData[month];
-//         let monthlyScores = [0, 0, 0];
-//         games.forEach(game => {
-//             const gameScores = [game.gg_score, game.dd_score, game.toto_score];
-//             const points = calculatePoints(gameScores);
-//             monthlyScores = monthlyScores.map((score, index) => score + points[index]);
-//         });
-
-//         // Calculate cumulative totals (though it seems there might be a conceptual misunderstanding in tallying monthlyScores directly)
-//         let monthlyTallies = calculatePoints(monthlyScores);
-
-//         // Update the total scores correctly
-//         totalScores = totalScores.map((total, index) => {
-//             return total + (index < 3 ? monthlyScores[index] : monthlyTallies[index - 3]);
-//         });
-
-//         return `<tr><td>${month}</td><td>${monthlyScores.concat(monthlyTallies).join('</td><td>')}</td></tr>`;
-//     });
-
-//     // Create table header and footer
-//     const header = `<tr><th>Month</th><th>GG Points</th><th>DD Points</th><th>Toto Points</th><th>GG Tally</th><th>DD Tally</th><th>Toto Tally</th></tr>`;
-//     const footer = `<tr><td>Total</td><td>${totalScores.join('</td><td>')}</td></tr>`;
-
-//     // Update the summaryTable with the new content
-//     const summaryTable = document.getElementById('summaryTable');
-//     summaryTable.innerHTML = header + rows.join('') + footer;
-// }
 
 function updateMonthlyScores(data) {
     const monthlyScores = document.getElementById('monthlyScores');
