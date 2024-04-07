@@ -67,19 +67,12 @@ function updateSummaryTable(data) {
   // Define function to calculate points
   const calculatePoints = (game) => {
     if ("gg_position" in game) {
-      console.log(
-        "positions: ",
-        game.gg_position,
-        game.dd_position,
-        game.toto_position
-      );
       return [
         3 - game.gg_position,
         3 - game.dd_position,
         3 - game.toto_position,
       ];
     } else {
-      console.log("Scores: ", game.gg_score, game.dd_score, game.toto_score);
       const scores = [game.gg_score, game.dd_score, game.toto_score];
       const sorted = [...scores].sort((a, b) => b - a);
       return scores.map((score) => {
@@ -90,23 +83,36 @@ function updateSummaryTable(data) {
     }
   };
 
-  // Process data for summary table
+  // Adjusted to correctly calculate monthly tallies based on monthly scores
+  const calculateTallies = (monthlyScores) => {
+    // Clone monthlyScores to avoid modifying the original array
+    const scores = [...monthlyScores];
+    // Sort the scores in descending order
+    scores.sort((a, b) => b - a);
+
+    // Map the original scores to their tallies
+    return monthlyScores.map((score) => {
+      if (score === scores[0]) return 2; // Highest score
+      if (score === scores[1]) return 1; // Second highest score
+      return 0; // Any other score
+    });
+  };
+
   let totalScores = [0, 0, 0, 0, 0, 0];
   const rows = Object.keys(monthlyData).map((monthName) => {
     const games = monthlyData[monthName];
     let monthlyScores = [0, 0, 0];
-    let monthlyTallies = [0, 0, 0]; // These will hold the same calculations as monthlyScores but for the cumulative totals
+    // let monthlyTallies = [0, 0, 0];
 
     games.forEach((game) => {
       const points = calculatePoints(game);
-      console.log("Return: ", points);
       monthlyScores = monthlyScores.map(
         (score, index) => score + points[index]
       );
     });
 
-    // Now, use the same logic for the tallies
-    monthlyTallies = calculatePoints(monthlyScores);
+    // Simplified logic for monthlyTallies based on available points data
+    let monthlyTallies = calculateTallies(monthlyScores);
 
     totalScores = totalScores.map(
       (total, index) =>
@@ -118,13 +124,11 @@ function updateSummaryTable(data) {
       .join("</td><td>")}</td></tr>`;
   });
 
-  // Create table header and footer
-  const header = `<tr><th>Mois</th><th>GG</th><th>DD</th><th>Toto</th><th>GG</th><th>DD</th><th>Toto</th></tr>`;
+  const header = `<tr><th>Mois</th><th>GG Points</th><th>DD Points</th><th>Toto Points</th><th>GG Tally</th><th>DD Tally</th><th>Toto Tally</th></tr>`;
   const footer = `<tr><td>Total</td><td>${totalScores.join(
     "</td><td>"
   )}</td></tr>`;
 
-  // Update the summaryTable with the new content
   const summaryTable = document.getElementById("summaryTable");
   summaryTable.innerHTML = header + rows.join("") + footer;
 }
