@@ -300,6 +300,16 @@ router.get("/logout", (req, res) => {
   });
 });
 
+// retrieve info from past games
+let lastMonthLoser;
+getParams()
+  .then((params) => {
+    lastMonthLoser = params;
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
 // connectDB();
 
 /* List of the routes for each action a player can take
@@ -512,22 +522,29 @@ function newGame() {
   gameState.lastGameWinners = [];
 
   // retrieve info from past games
-  getParams()
-    .then((params) => {
-      let { loserId, losingMonths, currentScores } = params;
-      // Find the player who matches the loserId
-      let loser = gameState.players.find(
-        (player) => player.username === loserId
-      );
-      if (loser) {
-        loser.monthlyLosses = losingMonths; // Update monthly losses for the loser
-      } else {
-        console.error(`No player found with username: ${loserId}`);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  if (lastMonthLoser) {
+    let { loserId, losingMonths, currentScores } = lastMonthLoser;
+    let loser = gameState.players.find((player) => player.username === loserId);
+    if (loser) {
+      loser.monthlyLosses = losingMonths;
+    }
+  }
+  // getParams()
+  //   .then((params) => {
+  //     let { loserId, losingMonths, currentScores } = params;
+  //     // Find the player who matches the loserId
+  //     let loser = gameState.players.find(
+  //       (player) => player.username === loserId
+  //     );
+  //     if (loser) {
+  //       loser.monthlyLosses = losingMonths; // Update monthly losses for the loser
+  //     } else {
+  //       console.error(`No player found with username: ${loserId}`);
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
 }
 
 // function to check if all players have the same score
