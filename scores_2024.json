@@ -1,0 +1,1235 @@
+[
+  {
+    "date": "2024-01-06T21:26:07-05:00",
+    "gg_score": 135,
+    "dd_score": 115,
+    "toto_score": 95
+  },
+  {
+    "date": "2024-01-06T22:04:55-05:00",
+    "gg_score": 160,
+    "dd_score": 135,
+    "toto_score": 165
+  },
+  {
+    "date": "2024-01-06T22:37:45-05:00",
+    "gg_score": 160,
+    "dd_score": 115,
+    "toto_score": 90
+  },
+  {
+    "date": "2024-01-06T23:09:18-05:00",
+    "gg_score": 130,
+    "dd_score": 135,
+    "toto_score": 135
+  },
+  {
+    "date": "2024-01-11T21:21:00-05:00",
+    "gg_score": 150,
+    "dd_score": 105,
+    "toto_score": 115
+  },
+  {
+    "date": "2024-01-11T21:47:19-05:00",
+    "gg_score": 120,
+    "dd_score": 95,
+    "toto_score": 110
+  },
+  {
+    "date": "2024-01-11T22:10:56-05:00",
+    "gg_score": 165,
+    "dd_score": 105,
+    "toto_score": 145
+  },
+  {
+    "date": "2024-01-18T21:24:42-05:00",
+    "gg_score": 125,
+    "dd_score": 105,
+    "toto_score": 145
+  },
+  {
+    "date": "2024-01-18T21:55:51-05:00",
+    "gg_score": 85,
+    "dd_score": 120,
+    "toto_score": 110
+  },
+  {
+    "date": "2024-01-18T22:25:17-05:00",
+    "gg_score": 85,
+    "dd_score": 95,
+    "toto_score": 150
+  },
+  {
+    "date": "2024-01-25T21:18:35-05:00",
+    "gg_score": 140,
+    "dd_score": 130,
+    "toto_score": 155
+  },
+  {
+    "date": "2024-01-25T21:42:58-05:00",
+    "gg_score": 110,
+    "dd_score": 120,
+    "toto_score": 170
+  },
+  {
+    "date": "2024-01-25T22:07:31-05:00",
+    "gg_score": 135,
+    "dd_score": 105,
+    "toto_score": 100
+  },
+  {
+    "date": "2024-01-31T21:16:28-05:00",
+    "gg_score": 115,
+    "dd_score": 45,
+    "toto_score": 95
+  },
+  {
+    "date": "2024-01-31T21:40:06-05:00",
+    "gg_score": 70,
+    "dd_score": 30,
+    "toto_score": 20
+  },
+  {
+    "date": "2024-02-08T21:36:49-05:00",
+    "gg_score": 160,
+    "dd_score": 135,
+    "toto_score": 80
+  },
+  {
+    "date": "2024-02-08T22:03:20-05:00",
+    "gg_score": 155,
+    "dd_score": 145,
+    "toto_score": 180
+  },
+  {
+    "date": "2024-02-08T22:28:31-05:00",
+    "gg_score": 185,
+    "dd_score": 130,
+    "toto_score": 150
+  },
+  {
+    "date": "2024-02-22T21:45:43-05:00",
+    "gg_score": 145,
+    "dd_score": 110,
+    "toto_score": 90
+  },
+  {
+    "date": "2024-02-22T22:19:38-05:00",
+    "gg_score": 135,
+    "dd_score": 165,
+    "toto_score": 100
+  },
+  {
+    "date": "2024-02-29T21:10:21-05:00",
+    "gg_score": 155,
+    "dd_score": 140,
+    "toto_score": 105
+  },
+  {
+    "date": "2024-02-29T21:35:06-05:00",
+    "gg_score": 125,
+    "dd_score": 150,
+    "toto_score": 130
+  },
+  {
+    "date": "2024-02-29T22:04:07-05:00",
+    "gg_score": 140,
+    "dd_score": 140,
+    "toto_score": 170
+  },
+  {
+    "date": "2024-02-29T22:24:03-05:00",
+    "gg_score": 125,
+    "dd_score": 115,
+    "toto_score": 80
+  },
+  {
+    "date": "2024-03-06T21:17:38-05:00",
+    "gg_score": 125,
+    "dd_score": 150,
+    "toto_score": 110
+  },
+  {
+    "date": "2024-03-06T21:46:56-05:00",
+    "gg_score": 160,
+    "dd_score": 130,
+    "toto_score": 190
+  },
+  {
+    "date": "2024-03-06T22:13:00-05:00",
+    "gg_score": 135,
+    "dd_score": 125,
+    "toto_score": 100
+  },
+  {
+    "date": "2024-03-14T21:17:31-04:00",
+    "gg_score": 90,
+    "dd_score": 40,
+    "toto_score": 105
+  },
+  {
+    "date": "2024-03-14T21:41:44-04:00",
+    "gg_score": 125,
+    "dd_score": 140,
+    "toto_score": 150
+  },
+  {
+    "date": "2024-03-14T22:09:18-04:00",
+    "gg_score": 95,
+    "dd_score": 130,
+    "toto_score": 125
+  },
+  {
+    "date": "2024-03-21T21:18:53-04:00",
+    "gg_score": 130,
+    "dd_score": 175,
+    "toto_score": 135
+  },
+  {
+    "date": "2024-03-21T21:44:08-04:00",
+    "gg_score": 195,
+    "dd_score": 175,
+    "toto_score": 195
+  },
+  {
+    "date": "2024-03-21T22:16:31-04:00",
+    "gg_score": 180,
+    "dd_score": 130,
+    "toto_score": 160
+  },
+  {
+    "date": "2024-03-28T21:26:57-04:00",
+    "gg_score": 100,
+    "dd_score": 130,
+    "toto_score": 125
+  },
+  {
+    "date": "2024-03-28T21:56:14-04:00",
+    "gg_score": 110,
+    "dd_score": 65,
+    "toto_score": 125
+  },
+  {
+    "date": "2024-03-28T22:34:08-04:00",
+    "gg_score": 120,
+    "dd_score": 115,
+    "toto_score": 125
+  },
+  {
+    "date": "2024-04-05T21:40:59-04:00",
+    "gg_score": 155,
+    "gg_position": 1,
+    "dd_score": 115,
+    "dd_position": 2,
+    "toto_score": 105,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-04-05T22:11:35-04:00",
+    "gg_score": 105,
+    "gg_position": 3,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 130,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-04-05T22:40:04-04:00",
+    "gg_score": 145,
+    "gg_position": 1,
+    "dd_score": 40,
+    "dd_position": 3,
+    "toto_score": 105,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-04-18T21:32:42-04:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 85,
+    "dd_position": 3,
+    "toto_score": 105,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-04-18T21:55:27-04:00",
+    "gg_score": 115,
+    "gg_position": 2,
+    "dd_score": 140,
+    "dd_position": 1,
+    "toto_score": 100,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-04-18T22:16:25-04:00",
+    "gg_score": 125,
+    "gg_position": 2,
+    "dd_score": 165,
+    "dd_position": 1,
+    "toto_score": 120,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-05-08T21:47:58-04:00",
+    "gg_score": 145,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 1,
+    "toto_score": 155,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-05-08T22:14:21-04:00",
+    "gg_score": 95,
+    "gg_position": 3,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 120,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-05-08T22:39:50-04:00",
+    "gg_score": 110,
+    "gg_position": 2,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 95,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-05-22T21:34:43-04:00",
+    "gg_score": 60,
+    "gg_position": 3,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 95,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-05-22T22:00:26-04:00",
+    "gg_score": 200,
+    "gg_position": 1,
+    "dd_score": 110,
+    "dd_position": 3,
+    "toto_score": 175,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-05-22T22:32:07-04:00",
+    "gg_score": 95,
+    "gg_position": 2,
+    "dd_score": 105,
+    "dd_position": 1,
+    "toto_score": 90,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-05-30T21:33:21-04:00",
+    "gg_score": 105,
+    "gg_position": 2,
+    "dd_score": 90,
+    "dd_position": 3,
+    "toto_score": 160,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-05-30T22:06:26-04:00",
+    "gg_score": 115,
+    "gg_position": 2,
+    "dd_score": 45,
+    "dd_position": 3,
+    "toto_score": 140,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-05-30T22:38:18-04:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 140,
+    "dd_position": 2,
+    "toto_score": 140,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-05-30T23:09:06-04:00",
+    "gg_score": 140,
+    "gg_position": 1,
+    "dd_score": 125,
+    "dd_position": 2,
+    "toto_score": 75,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-08T20:56:39-04:00",
+    "gg_score": 150,
+    "gg_position": 1,
+    "dd_score": 110,
+    "dd_position": 2,
+    "toto_score": 105,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-08T21:25:53-04:00",
+    "gg_score": 200,
+    "gg_position": 1,
+    "dd_score": 120,
+    "dd_position": 2,
+    "toto_score": 95,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-08T21:52:03-04:00",
+    "gg_score": 75,
+    "gg_position": 2,
+    "dd_score": 85,
+    "dd_position": 1,
+    "toto_score": 65,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-08T22:16:51-04:00",
+    "gg_score": 110,
+    "gg_position": 3,
+    "dd_score": 115,
+    "dd_position": 2,
+    "toto_score": 130,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-06-08T22:42:07-04:00",
+    "gg_score": 160,
+    "gg_position": 1,
+    "dd_score": 145,
+    "dd_position": 2,
+    "toto_score": 120,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-22T15:56:20-04:00",
+    "gg_score": 145,
+    "gg_position": 2,
+    "dd_score": 135,
+    "dd_position": 3,
+    "toto_score": 150,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-06-22T16:26:21-04:00",
+    "gg_score": 140,
+    "gg_position": 1,
+    "dd_score": 120,
+    "dd_position": 2,
+    "toto_score": 90,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-22T16:57:49-04:00",
+    "gg_score": 155,
+    "gg_position": 2,
+    "dd_score": 120,
+    "dd_position": 3,
+    "toto_score": 175,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-06-22T17:35:04-04:00",
+    "gg_score": 120,
+    "gg_position": 3,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 125,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-22T16:57:49-04:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 1,
+    "toto_score": 120,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 80,
+    "gg_position": 3,
+    "dd_score": 105,
+    "dd_position": 2,
+    "toto_score": 140,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 105,
+    "dd_position": 3,
+    "toto_score": 120,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 30,
+    "gg_position": 3,
+    "dd_score": 105,
+    "dd_position": 1,
+    "toto_score": 65,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 80,
+    "gg_position": 3,
+    "dd_score": 125,
+    "dd_position": 1,
+    "toto_score": 85,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 160,
+    "gg_position": 1,
+    "dd_score": 120,
+    "dd_position": 2,
+    "toto_score": 110,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 155,
+    "gg_position": 1,
+    "dd_score": 130,
+    "dd_position": 2,
+    "toto_score": 110,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 115,
+    "gg_position": 2,
+    "dd_score": 95,
+    "dd_position": 3,
+    "toto_score": 135,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 140,
+    "gg_position": 2,
+    "dd_score": 165,
+    "dd_position": 1,
+    "toto_score": 115,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 150,
+    "gg_position": 2,
+    "dd_score": 175,
+    "dd_position": 1,
+    "toto_score": 125,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-06-23T16:57:49-04:00",
+    "gg_score": 75,
+    "gg_position": 3,
+    "dd_score": 120,
+    "dd_position": 1,
+    "toto_score": 85,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-25T21:28:23-04:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 1,
+    "toto_score": 140,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-25T21:50:15-04:00",
+    "gg_score": 120,
+    "gg_position": 3,
+    "dd_score": 125,
+    "dd_position": 2,
+    "toto_score": 150,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-06-25T22:12:33-04:00",
+    "gg_score": 140,
+    "gg_position": 1,
+    "dd_score": 135,
+    "dd_position": 3,
+    "toto_score": 140,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-06-25T22:34:51-04:00",
+    "gg_score": 100,
+    "gg_position": 2,
+    "dd_score": 95,
+    "dd_position": 3,
+    "toto_score": 125,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-07-18T21:33:17-04:00",
+    "gg_score": 135,
+    "gg_position": 3,
+    "dd_score": 170,
+    "dd_position": 2,
+    "toto_score": 180,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-07-18T22:07:48-04:00",
+    "gg_score": 85,
+    "gg_position": 3,
+    "dd_score": 120,
+    "dd_position": 2,
+    "toto_score": 160,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-07-18T22:35:17-04:00",
+    "gg_score": 140,
+    "gg_position": 2,
+    "dd_score": 135,
+    "dd_position": 3,
+    "toto_score": 145,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-07-30T21:40:56-04:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 120,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-07-30T22:10:49-04:00",
+    "gg_score": 155,
+    "gg_position": 1,
+    "dd_score": 100,
+    "dd_position": 2,
+    "toto_score": 95,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-07-30T22:33:42-04:00",
+    "gg_score": 130,
+    "gg_position": 2,
+    "dd_score": 140,
+    "dd_position": 1,
+    "toto_score": 80,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-08-11T18:04:13-04:00",
+    "gg_score": 60,
+    "gg_position": 3,
+    "dd_score": 105,
+    "dd_position": 2,
+    "toto_score": 170,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-11T18:04:13-04:00",
+    "gg_score": 60,
+    "gg_position": 3,
+    "dd_score": 85,
+    "dd_position": 2,
+    "toto_score": 85,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-12T18:04:13-04:00",
+    "gg_score": 190,
+    "gg_position": 1,
+    "dd_score": 120,
+    "dd_position": 3,
+    "toto_score": 125,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-12T18:04:13-04:00",
+    "gg_score": 100,
+    "gg_position": 1,
+    "dd_score": 55,
+    "dd_position": 3,
+    "toto_score": 95,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-13T18:04:13-04:00",
+    "gg_score": 130,
+    "gg_position": 3,
+    "dd_score": 150,
+    "dd_position": 1,
+    "toto_score": 130,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-13T18:04:13-04:00",
+    "gg_score": 125,
+    "gg_position": 1,
+    "dd_score": 60,
+    "dd_position": 3,
+    "toto_score": 80,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-14T18:04:13-04:00",
+    "gg_score": 145,
+    "gg_position": 1,
+    "dd_score": 110,
+    "dd_position": 3,
+    "toto_score": 130,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-14T18:04:13-04:00",
+    "gg_score": 145,
+    "gg_position": 2,
+    "dd_score": 150,
+    "dd_position": 1,
+    "toto_score": 115,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-08-15T18:04:13-04:00",
+    "gg_score": 135,
+    "gg_position": 2,
+    "dd_score": 125,
+    "dd_position": 3,
+    "toto_score": 150,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-15T18:04:13-04:00",
+    "gg_score": 175,
+    "gg_position": 2,
+    "dd_score": 155,
+    "dd_position": 3,
+    "toto_score": 205,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-15T18:04:13-04:00",
+    "gg_score": 150,
+    "gg_position": 1,
+    "dd_score": 70,
+    "dd_position": 3,
+    "toto_score": 125,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-16T18:04:13-04:00",
+    "gg_score": 145,
+    "gg_position": 2,
+    "dd_score": 135,
+    "dd_position": 3,
+    "toto_score": 155,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-16T18:04:13-04:00",
+    "gg_score": 100,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 2,
+    "toto_score": 165,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-16T18:04:13-04:00",
+    "gg_score": 95,
+    "gg_position": 2,
+    "dd_score": 70,
+    "dd_position": 3,
+    "toto_score": 120,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-08-16T18:04:13-04:00",
+    "gg_score": 80,
+    "gg_position": 3,
+    "dd_score": 100,
+    "dd_position": 1,
+    "toto_score": 100,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-16T18:04:13-04:00",
+    "gg_score": 155,
+    "gg_position": 1,
+    "dd_score": 95,
+    "dd_position": 3,
+    "toto_score": 145,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-17T18:04:13-04:00",
+    "gg_score": 125,
+    "gg_position": 2,
+    "dd_score": 150,
+    "dd_position": 1,
+    "toto_score": 115,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-08-17T18:04:13-04:00",
+    "gg_score": 180,
+    "gg_position": 1,
+    "dd_score": 105,
+    "dd_position": 3,
+    "toto_score": 160,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-17T18:04:13-04:00",
+    "gg_score": 145,
+    "gg_position": 2,
+    "dd_score": 155,
+    "dd_position": 1,
+    "toto_score": 120,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-08-17T18:04:13-04:00",
+    "gg_score": 190,
+    "gg_position": 1,
+    "dd_score": 110,
+    "dd_position": 3,
+    "toto_score": 111,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-17T18:04:13-04:00",
+    "gg_score": 175,
+    "gg_position": 1,
+    "dd_score": 100,
+    "dd_position": 3,
+    "toto_score": 165,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-23T22:02:07-04:00",
+    "gg_score": 180,
+    "gg_position": 1,
+    "dd_score": 150,
+    "dd_position": 3,
+    "toto_score": 165,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-23T22:30:26-04:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 85,
+    "dd_position": 3,
+    "toto_score": 115,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-23T22:51:48-04:00",
+    "gg_score": 115,
+    "gg_position": 1,
+    "dd_score": 75,
+    "dd_position": 3,
+    "toto_score": 105,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-08-23T23:14:11-04:00",
+    "gg_score": 85,
+    "gg_position": 3,
+    "dd_score": 110,
+    "dd_position": 2,
+    "toto_score": 135,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-10-22T21:17:39-04:00",
+    "gg_score": 130,
+    "gg_position": 2,
+    "dd_score": 145,
+    "dd_position": 1,
+    "toto_score": 70,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-10-22T21:48:08-04:00",
+    "gg_score": 110,
+    "gg_position": 2,
+    "dd_score": 125,
+    "dd_position": 1,
+    "toto_score": 90,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-10-22T22:15:51-04:00",
+    "gg_score": 150,
+    "gg_position": 1,
+    "dd_score": 125,
+    "dd_position": 2,
+    "toto_score": 115,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-10-22T22:40:15-04:00",
+    "gg_score": 185,
+    "gg_position": 3,
+    "dd_score": 190,
+    "dd_position": 2,
+    "toto_score": 200,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-10-30T22:40:15-04:00",
+    "gg_score": 80,
+    "gg_position": 3,
+    "dd_score": 110,
+    "dd_position": 2,
+    "toto_score": 140,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-10-30T22:40:15-04:00",
+    "gg_score": 65,
+    "gg_position": 3,
+    "dd_score": 125,
+    "dd_position": 2,
+    "toto_score": 160,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-10-30T22:40:15-04:00",
+    "gg_score": 135,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 2,
+    "toto_score": 165,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-10-30T22:40:15-04:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 105,
+    "dd_position": 3,
+    "toto_score": 125,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-02T21:32:34-04:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 130,
+    "dd_position": 1,
+    "toto_score": 125,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-02T21:56:15-04:00",
+    "gg_score": 120,
+    "gg_position": 1,
+    "dd_score": 75,
+    "dd_position": 3,
+    "toto_score": 90,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-02T22:21:39-04:00",
+    "gg_score": 80,
+    "gg_position": 1,
+    "dd_score": 75,
+    "dd_position": 2,
+    "toto_score": 50,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-11-02T22:40:58-04:00",
+    "gg_score": 190,
+    "gg_position": 1,
+    "dd_score": 170,
+    "dd_position": 3,
+    "toto_score": 175,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-02T23:03:33-04:00",
+    "gg_score": 145,
+    "gg_position": 1,
+    "dd_score": 95,
+    "dd_position": 3,
+    "toto_score": 140,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-14T21:29:16-05:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 105,
+    "dd_position": 3,
+    "toto_score": 110,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-14T21:57:19-05:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 120,
+    "dd_position": 3,
+    "toto_score": 130,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-14T22:22:13-05:00",
+    "gg_score": 105,
+    "gg_position": 1,
+    "dd_score": 80,
+    "dd_position": 2,
+    "toto_score": 65,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-11-20T21:17:29-05:00",
+    "gg_score": 95,
+    "gg_position": 2,
+    "dd_score": 95,
+    "dd_position": 3,
+    "toto_score": 110,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-11-20T21:44:28-05:00",
+    "gg_score": 115,
+    "gg_position": 2,
+    "dd_score": 120,
+    "dd_position": 1,
+    "toto_score": 85,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-11-20T22:06:50-05:00",
+    "gg_score": 135,
+    "gg_position": 1,
+    "dd_score": 110,
+    "dd_position": 2,
+    "toto_score": 105,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-11-20T22:34:40-05:00",
+    "gg_score": 90,
+    "gg_position": 2,
+    "dd_score": 75,
+    "dd_position": 3,
+    "toto_score": 125,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-11-26T21:21:09-05:00",
+    "gg_score": 145,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 2,
+    "toto_score": 180,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-11-26T21:50:25-05:00",
+    "gg_score": 150,
+    "gg_position": 2,
+    "dd_score": 160,
+    "dd_position": 1,
+    "toto_score": 125,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-11-26T22:12:06-05:00",
+    "gg_score": 60,
+    "gg_position": 3,
+    "dd_score": 75,
+    "dd_position": 1,
+    "toto_score": 65,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-11-26T22:36:45-05:00",
+    "gg_score": 145,
+    "gg_position": 1,
+    "dd_score": 115,
+    "dd_position": 3,
+    "toto_score": 130,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 140,
+    "gg_position": 3,
+    "dd_score": 165,
+    "dd_position": 1,
+    "toto_score": 155,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 135,
+    "gg_position": 2,
+    "dd_score": 130,
+    "dd_position": 3,
+    "toto_score": 150,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 120,
+    "gg_position": 2,
+    "dd_score": 115,
+    "dd_position": 3,
+    "toto_score": 185,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 40,
+    "gg_position": 3,
+    "dd_score": 110,
+    "dd_position": 1,
+    "toto_score": 100,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 125,
+    "dd_position": 2,
+    "toto_score": 150,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 75,
+    "gg_position": 2,
+    "dd_score": 60,
+    "dd_position": 3,
+    "toto_score": 125,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 135,
+    "gg_position": 2,
+    "dd_score": 100,
+    "dd_position": 3,
+    "toto_score": 160,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 85,
+    "gg_position": 2,
+    "dd_score": 100,
+    "dd_position": 1,
+    "toto_score": 70,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 130,
+    "gg_position": 2,
+    "dd_score": 90,
+    "dd_position": 3,
+    "toto_score": 145,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 130,
+    "gg_position": 2,
+    "dd_score": 120,
+    "dd_position": 2,
+    "toto_score": 135,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-07T18:04:13-04:00",
+    "gg_score": 105,
+    "gg_position": 1,
+    "dd_score": 65,
+    "dd_position": 3,
+    "toto_score": 90,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-12-10T21:19:48-05:00",
+    "gg_score": 195,
+    "gg_position": 1,
+    "dd_score": 195,
+    "dd_position": 2,
+    "toto_score": 145,
+    "toto_position": 3
+  },
+  {
+    "date": "2024-12-10T21:39:36-05:00",
+    "gg_score": 140,
+    "gg_position": 2,
+    "dd_score": 130,
+    "dd_position": 3,
+    "toto_score": 170,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-10T22:04:31-05:00",
+    "gg_score": 85,
+    "gg_position": 2,
+    "dd_score": 80,
+    "dd_position": 3,
+    "toto_score": 115,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-17T21:20:28-05:00",
+    "gg_score": 135,
+    "gg_position": 2,
+    "dd_score": 130,
+    "dd_position": 3,
+    "toto_score": 160,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-17T21:42:35-05:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 185,
+    "dd_position": 2,
+    "toto_score": 185,
+    "toto_position": 1
+  },
+  {
+    "date": "2024-12-17T22:03:52-05:00",
+    "gg_score": 110,
+    "gg_position": 1,
+    "dd_score": 65,
+    "dd_position": 3,
+    "toto_score": 95,
+    "toto_position": 2
+  },
+  {
+    "date": "2024-12-17T22:25:25-05:00",
+    "gg_score": 145,
+    "gg_position": 2,
+    "dd_score": 145,
+    "dd_position": 1,
+    "toto_score": 140,
+    "toto_position": 3
+  }
+]

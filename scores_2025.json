@@ -1,0 +1,128 @@
+[
+  {
+    "date": "2025-01-09T21:25:56-05:00",
+    "gg_score": 110,
+    "gg_position": 2,
+    "dd_score": 55,
+    "dd_position": 3,
+    "toto_score": 145,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-09T21:53:23-05:00",
+    "gg_score": 85,
+    "gg_position": 3,
+    "dd_score": 85,
+    "dd_position": 2,
+    "toto_score": 125,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-09T22:21:25-05:00",
+    "gg_score": 150,
+    "gg_position": 2,
+    "dd_score": 125,
+    "dd_position": 3,
+    "toto_score": 165,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-09T22:44:07-05:00",
+    "gg_score": 55,
+    "gg_position": 3,
+    "dd_score": 80,
+    "dd_position": 1,
+    "toto_score": 75,
+    "toto_position": 2
+  },
+  {
+    "date": "2025-01-18T22:45:46-05:00",
+    "gg_score": 80,
+    "gg_position": 3,
+    "dd_score": 135,
+    "dd_position": 1,
+    "toto_score": 95,
+    "toto_position": 2
+  },
+  {
+    "date": "2025-01-18T22:45:46-05:00",
+    "gg_score": 115,
+    "gg_position": 3,
+    "dd_score": 155,
+    "dd_position": 2,
+    "toto_score": 165,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-18T22:45:46-05:00",
+    "gg_score": 80,
+    "gg_position": 2,
+    "dd_score": 125,
+    "dd_position": 1,
+    "toto_score": 80,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-18T22:45:46-05:00",
+    "gg_score": 70,
+    "gg_position": 3,
+    "dd_score": 130,
+    "dd_position": 1,
+    "toto_score": 110,
+    "toto_position": 2
+  },
+  {
+    "date": "2025-01-18T22:45:46-05:00",
+    "gg_score": 105,
+    "gg_position": 1,
+    "dd_score": 80,
+    "dd_position": 2,
+    "toto_score": 35,
+    "toto_position": 3
+  },
+  {
+    "date": "2025-01-18T22:45:46-05:00",
+    "gg_score": 165,
+    "gg_position": 1,
+    "dd_score": 135,
+    "dd_position": 3,
+    "toto_score": 145,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-23T21:14:27-05:00",
+    "gg_score": 115,
+    "gg_position": 2,
+    "dd_score": 105,
+    "dd_position": 3,
+    "toto_score": 130,
+    "toto_position": 1
+  },
+  {
+    "date": "2025-01-23T21:42:39-05:00",
+    "gg_score": 130,
+    "gg_position": 2,
+    "dd_score": 165,
+    "dd_position": 1,
+    "toto_score": 130,
+    "toto_position": 3
+  },
+  {
+    "date": "2025-01-23T22:14:44-05:00",
+    "gg_score": 130,
+    "gg_position": 1,
+    "dd_score": 100,
+    "dd_position": 2,
+    "toto_score": 90,
+    "toto_position": 3
+  },
+  {
+    "date": "2025-01-23T22:45:46-05:00",
+    "gg_score": 145,
+    "gg_position": 1,
+    "dd_score": 110,
+    "dd_position": 2,
+    "toto_score": 105,
+    "toto_position": 3
+  }
+]
